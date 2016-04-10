@@ -123,8 +123,11 @@ public class TableCreator : MonoBehaviour {
 
 		}
 		*/
+ 
 		MonoSQLiteManager msm = new MonoSQLiteManager("/PatternSystem/Resources/DB/PatternSystem.db");
-		ClassMemberGetter.CreateTable (msm);
+		///ClassMemberGetter.CreateTable (msm);
+        msm.DQDeleteColumn("DBArrange","type");
+
 
 	}
 	

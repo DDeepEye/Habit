@@ -14,17 +14,9 @@ namespace DBAgent
 		static public string GetDBAttributes(System.Reflection.FieldInfo info)
 		{
 			string attributes = "";
-			if (s_Attributes.Count == 0) {
-				s_Attributes.Add (typeof(NOT_NULL));
-				s_Attributes.Add (typeof(PRIMARY_KEY));
-				s_Attributes.Add (typeof(AUTOINCREMENT));
-				s_Attributes.Add (typeof(UNIQUE));
-
-
-				s_AttributesName.Add(NOT_NULL.s_key);
-				s_AttributesName.Add(PRIMARY_KEY.s_key);
-				s_AttributesName.Add(AUTOINCREMENT.s_key);
-				s_AttributesName.Add(UNIQUE.s_key);
+			if (s_Attributes.Count == 0) 
+            {
+                Init();
 			}
 			HashSet<string> xorAttributesName = new HashSet<string>();
 			foreach (string name in s_AttributesName)
@@ -49,6 +41,38 @@ namespace DBAgent
 			}
 			return attributes;
 		}
+        private static void Init()
+        {
+            s_Attributes.Add (typeof(NOT_NULL));
+            s_Attributes.Add (typeof(PRIMARY_KEY));
+            s_Attributes.Add (typeof(AUTOINCREMENT));
+            s_Attributes.Add (typeof(UNIQUE));
+
+            s_AttributesName.Add(NOT_NULL.s_key);
+            s_AttributesName.Add(PRIMARY_KEY.s_key);
+            s_AttributesName.Add(AUTOINCREMENT.s_key);
+            s_AttributesName.Add(UNIQUE.s_key);
+        }
+
+        public static string FindStringInAttributes(string inAtt)
+        {
+            if (s_Attributes.Count == 0) 
+            {
+                Init();
+            }
+
+            string strAttributes = "";
+            foreach (string att in s_AttributesName)
+            {
+                if (inAtt.IndexOf(att) >= 0)
+                {
+                    strAttributes += att;
+                    strAttributes += " ";
+                }
+            }
+            return strAttributes;
+        }
+
 		protected DBFieldAttribute(){}
 		public abstract string GetKeyWord();
 
@@ -86,11 +110,11 @@ namespace DBAgent
 
 	public class UNIQUE : DBFieldAttribute
 	{
-		public static string s_key = "NOT NULL";
+		public static string s_key = "UNIQUE";
 		public UNIQUE(){}
 		public override string GetKeyWord()
 		{
-			return "NOT NULL";
+            return "UNIQUE";
 		}
 	}
 }

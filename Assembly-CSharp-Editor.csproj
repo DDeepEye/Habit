@@ -75,16 +75,16 @@
  <HintPath>/Applications/Unity/Unity.app/Contents/UnityExtensions/Unity/TreeEditor/Editor/UnityEditor.TreeEditor.dll</HintPath>
  </Reference>
  <Reference Include="Mono.Data.Sqlite">
- <HintPath>/Users/leejihoon/Desktop/Developer/Projects/Habit/Assets/PatternSystem/Plugin/Mono.Data.Sqlite.dll</HintPath>
+ <HintPath>/Users/leejihoon/Desktop/Developer/Projects/GitHub/Habit/Assets/PatternSystem/Plugin/Mono.Data.Sqlite.dll</HintPath>
  </Reference>
  <Reference Include="System.Data">
- <HintPath>/Users/leejihoon/Desktop/Developer/Projects/Habit/Assets/PatternSystem/Plugin/System.Data.dll</HintPath>
+ <HintPath>/Users/leejihoon/Desktop/Developer/Projects/GitHub/Habit/Assets/PatternSystem/Plugin/System.Data.dll</HintPath>
  </Reference>
  <Reference Include="SimpleSQL_Editor">
- <HintPath>/Users/leejihoon/Desktop/Developer/Projects/Habit/Assets/SimpleSQL/Editor/SimpleSQL_Editor.dll</HintPath>
+ <HintPath>/Users/leejihoon/Desktop/Developer/Projects/GitHub/Habit/Assets/SimpleSQL/Editor/SimpleSQL_Editor.dll</HintPath>
  </Reference>
  <Reference Include="SimpleSQL_Runtime">
- <HintPath>/Users/leejihoon/Desktop/Developer/Projects/Habit/Assets/SimpleSQL/Plugins/SimpleSQL_Runtime.dll</HintPath>
+ <HintPath>/Users/leejihoon/Desktop/Developer/Projects/GitHub/Habit/Assets/SimpleSQL/Plugins/SimpleSQL_Runtime.dll</HintPath>
  </Reference>
  <Reference Include="UnityEditor.Graphs">
  <HintPath>/Applications/Unity/Unity.app/Contents/Frameworks/Managed/UnityEditor.Graphs.dll</HintPath>
