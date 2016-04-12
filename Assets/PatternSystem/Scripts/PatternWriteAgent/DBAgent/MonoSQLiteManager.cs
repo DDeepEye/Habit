@@ -507,22 +507,33 @@ namespace DBAgent
 
 		
 		public bool DQDeleteColumn(string tableName, string deleteColumnName)
-		{
-            string backupTableName = "_backup_" + tableName;
+		{   
             Dictionary<string, ColumnInfo> dbColumns = GetDBTableColumnsInfo (tableName);
+            if(dbColumns != null)
+            {
+                if (dbColumns.ContainsKey(deleteColumnName))
+                    return false;
 
-            CloneTable(tableName, backupTableName);
-            DropTable(tableName);
-            dbColumns.Remove (deleteColumnName);
-            CreateTable(tableName, dbColumns);
-            if (!CommandQueries(false))
-                return false;
+                dbColumns.Remove(deleteColumnName);
+                string backupTableName = "_backup_" + tableName;
+                CloneTable(tableName, backupTableName);
+                DropTable(tableName);                
+                CreateTable(tableName, dbColumns);
+                if (!CommandQueries(false))
+                {   
+                    return false;
+                }
 
+                CopyTable(backupTableName, tableName);
+                DropTable(backupTableName);
 
-            CopyTable(backupTableName, tableName);
-            DropTable(backupTableName);
-			
-            return CommandQueries();
+                return CommandQueries();
+            }
+            else
+            {
+                Debug.Log("not Exist Table => " + tableName);
+            }
+            return false;
 		}
 
 

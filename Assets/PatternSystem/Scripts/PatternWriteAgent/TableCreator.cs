@@ -125,12 +125,9 @@ public class TableCreator : MonoBehaviour {
 		}
 		*/
  
-		MonoSQLiteManager msm = new MonoSQLiteManager("/PatternSystem/Resources/DB/PatternSystem.db");
-        msm.DropTable("DBHabit");
-        msm.DropTable("DBHabit");
-        msm.CommandQueries();
+		MonoSQLiteManager msm = new MonoSQLiteManager("/PatternSystem/Resources/DB/PatternSystem.db");        
 		///ClassMemberGetter.CreateTable (msm);
-        ///msm.DQDeleteColumn("DBArrange","type");
+        msm.DQDeleteColumn("DBTimere","tt");
 
 
 	}
