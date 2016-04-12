@@ -58,12 +58,6 @@
     <Reference Include="UnityEngine.Networking">
       <HintPath>Library\UnityAssemblies\UnityEngine.Networking.dll</HintPath>
     </Reference>
-    <Reference Include="UnityEngine.Networking">
-      <HintPath>Library\UnityAssemblies\UnityEngine.Networking.dll</HintPath>
-    </Reference>
-    <Reference Include="UnityEngine.UI">
-      <HintPath>Library\UnityAssemblies\UnityEngine.UI.dll</HintPath>
-    </Reference>
     <Reference Include="UnityEditor">
       <HintPath>Library\UnityAssemblies\UnityEditor.dll</HintPath>
     </Reference>
@@ -99,7 +93,8 @@
     <Compile Include="Assets\PatternSystem\Scripts\HabitCast\Scale.cs" />
     <Compile Include="Assets\PatternSystem\Scripts\HabitCast\Timer.cs" />
     <Compile Include="Assets\PatternSystem\Scripts\HabitCast\Triger.cs" />
-    <Compile Include="Assets\PatternSystem\Scripts\MonoSQLiteManager.cs" />
+    <Compile Include="Assets\PatternSystem\Scripts\PatternWriteAgent\DBAgent\MonoSQLiteManager.cs" />
+    <Compile Include="Assets\PatternSystem\Scripts\PatternWriteAgent\DBAgent\PropertyAttribute.cs" />
     <Compile Include="Assets\PatternSystem\Scripts\PatternWriteAgent\DBTables.cs" />
     <Compile Include="Assets\PatternSystem\Scripts\PatternWriteAgent\TableCreator.cs" />
     <Compile Include="Assets\PatternSystem\Scripts\ResourcesPool.cs" />

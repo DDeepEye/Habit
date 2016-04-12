@@ -1,4 +1,5 @@
 ﻿using UnityEngine;
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Reflection;
@@ -125,8 +126,11 @@ public class TableCreator : MonoBehaviour {
 		*/
  
 		MonoSQLiteManager msm = new MonoSQLiteManager("/PatternSystem/Resources/DB/PatternSystem.db");
+        msm.DropTable("DBHabit");
+        msm.DropTable("DBHabit");
+        msm.CommandQueries();
 		///ClassMemberGetter.CreateTable (msm);
-        msm.DQDeleteColumn("DBArrange","type");
+        ///msm.DQDeleteColumn("DBArrange","type");
 
 
 	}

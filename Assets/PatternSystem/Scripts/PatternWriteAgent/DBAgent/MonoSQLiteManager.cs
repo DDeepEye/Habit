@@ -1,5 +1,6 @@
 ﻿using UnityEngine;
 using System;
+using System.IO;
 using System.Collections;
 using System.Collections.Generic;
 using Mono.Data.Sqlite;
@@ -106,8 +107,7 @@ namespace DBAgent
         {
             if (!_dbManager.IsExistenceTable(_tableName))
             {
-                Debug.Log("Exist Table => " + _tableName);
-
+                Debug.Log("not Exist Table => " + _tableName);
             }
             string q = "DELETE FROM "+_tableName;
             _dbManager.ExecuteNonQuery(q);
@@ -135,7 +135,7 @@ namespace DBAgent
             _dbManager.ExecuteNonQuery(q);
             q = "PRAGMA foreign_keys = \"0\"";
             _dbManager.ExecuteNonQuery(q);
-            q = "DROP TABLE IF EXISTS " + "`"+_tableName+"`";
+            q = "DROP TABLE " + "`"+_tableName+"`";
             _dbManager.ExecuteNonQuery(q);
         }
 
@@ -235,6 +235,8 @@ namespace DBAgent
 
 	public class MonoSQLiteManager
 	{
+        string _fileName = null;
+        string _filePath = null;
 		private SqliteConnection _conn = null;
         public SqliteConnection Conn {get{return _conn; }}
 		private Queue<QueryContainer> _queries = new Queue<QueryContainer>();
@@ -244,7 +246,15 @@ namespace DBAgent
 
 		public MonoSQLiteManager(string dbFilePath)
 		{
-			string path = "URI=file:" + Application.dataPath + dbFilePath;
+            _filePath = Application.dataPath + dbFilePath;
+            string path = "URI=file:" + _filePath;
+
+            int slushfilenameIndex = path.LastIndexOf('/') + 1;
+            int reslushfilenameIndex = path.LastIndexOf('\\') + 1;
+            int filenameIndex = slushfilenameIndex > reslushfilenameIndex ? slushfilenameIndex : reslushfilenameIndex;
+
+            _fileName = path.Substring(filenameIndex);
+            
 			_conn = new SqliteConnection(path);
 
 			if(_conn != null)
@@ -337,23 +347,54 @@ namespace DBAgent
 
         public bool CommandQueries(bool isbackup = true)
 		{
+            string backupFileName = _filePath.Replace(_fileName, "_backup" + _fileName);
 			try
-			{   
-				while (_queries.Count > 0)
-				{
-                    QueryContainer q = _queries.Dequeue();
-                    q.Run();
-				}
+			{
+                FileInfo file = new FileInfo(_filePath);
+                if(file.Exists)
+                {
+                    if (isbackup)
+                        file.CopyTo(backupFileName, true);
+                    while (_queries.Count > 0)
+                    {
+                        QueryContainer q = _queries.Dequeue();
+                        q.Run();
+                    }
+                }
+                else
+                {
+                    Debug.Log(_filePath + " not create ");
+                    _queries.Clear();
+                    return false;
+                }
+				
 			}
 			catch(Exception e)
 			{
 				
 				Debug.Log(e.ToString());
 				Debug.Log("Both records are written to database.");
-
+                _conn.Close();
+                if (isbackup)
+                {
+                    FileInfo file = new FileInfo(backupFileName);
+                    if (file.Exists)
+                    {
+                        file.CopyTo(_filePath, true);
+                    }
+                }
+                string path = "URI=file:" + _filePath;
+                _conn = new SqliteConnection(path);
+                
 				_queries.Clear();
+
+                if (isbackup)
+                    File.Delete(backupFileName);
+
 				return false;
 			}
+            if (isbackup)
+                File.Delete(backupFileName);
 			return true;
 		}
 
