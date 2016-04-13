@@ -313,16 +313,62 @@ namespace DBAgent
             selectQ += selectColumnsQ;
             selectQ +=" FROM " + "`"+originName + "`";
             return insertQ + selectQ;
-        }
+        }        
 
         public override void Run()
         {
             _dbManager.ExecuteNonQuery(GetQuery(_dbManager, _originName, _toCopyTable));
         }
-        string _originName;
-        string _toCopyTable;
+        string  _originName;
+        string  _toCopyTable;
     }
-	
+
+    public class InsertTable<T> : QueryContainer
+    {
+        internal InsertTable(MonoSQLiteManager dbManager, ref T table)
+            : base(dbManager)
+        {
+            _table = table;
+        }
+
+        static public string GetQuery(MonoSQLiteManager dbManager, ref T table)
+        {
+            Dictionary<string, ColumnInfo> columns = dbManager.GetTableColumnsInfo(table.GetType());
+
+            System.Type type = table.GetType();
+            FieldInfo[] members = type.GetFields(BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Instance);            
+
+            string q = "INSERT INTO " + table.GetType().Name + " (";
+            string columns_q = "";
+            string value_q = " values(";
+
+            for(int i = 0; i < members.Length; ++i)
+            {
+                if(columns_q.Length > 0)
+                {
+                    columns_q += ",";
+                    value_q += ",";
+                }
+                    
+                columns_q += members[i].Name;
+                if (members[i].FieldType == typeof(string) || members[i].FieldType == typeof(char))
+                    value_q += "`";
+                value_q += members[i].GetValue(table).ToString();
+                if (members[i].FieldType == typeof(string) || members[i].FieldType == typeof(char))
+                    value_q += "`";
+            }
+
+            q += columns_q + ")";
+            q += value_q + ")";
+            return q;
+        }
+
+        public override void Run()
+        {
+            _dbManager.ExecuteNonQuery(GetQuery(_dbManager, ref _table));
+        }
+        T   _table;
+    }
 
 	public class MonoSQLiteManager
 	{
@@ -594,6 +640,11 @@ namespace DBAgent
 		{
             PushQuery(new DBAgent.AddColumn(this, tableName, columnName, type));
 		}
+
+        public void InsertTable<T>(ref T table)
+        {
+            PushQuery(new DBAgent.InsertTable<T>(this, ref table));
+        }
 
 		
 		public bool DQDeleteColumn(string tableName, string deleteColumnName)
