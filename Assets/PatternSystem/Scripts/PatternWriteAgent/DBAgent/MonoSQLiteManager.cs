@@ -42,10 +42,11 @@ namespace DBAgent
             _isBackup = isBackup;
         }
 
-        internal CreateTable(MonoSQLiteManager dbManager, string tableName, Dictionary<string, ColumnInfo> columns): base(dbManager)
+		internal CreateTable(MonoSQLiteManager dbManager, string tableName, Dictionary<string, ColumnInfo> columns, bool isBackup = true): base(dbManager)
         {
             _tableName = tableName;
             _columns = columns;
+			_isBackup = isBackup;
         }
 
         static public string GetQuery(MonoSQLiteManager dbManager, System.Type table)
@@ -574,9 +575,9 @@ namespace DBAgent
             PushQuery(new DBAgent.CreateTable(this, table, isBackup));
         }
 
-        public void CreateTable(string tableName, Dictionary<string, ColumnInfo> columns)
+		public void CreateTable(string tableName, Dictionary<string, ColumnInfo> columns, bool isBackup = true)
         {
-            PushQuery(new DBAgent.CreateTable(this, tableName, columns));
+			PushQuery(new DBAgent.CreateTable(this, tableName, columns, isBackup));
         }
 
 		public void DeleteTable(string tableName)
