@@ -81,6 +81,7 @@ namespace DBAgent
 	public class AUTOINCREMENT : DBFieldAttribute
 	{
 		public static string s_key = "AUTOINCREMENT";
+        public static string Key { get { return s_key; } }
 		public AUTOINCREMENT(){}
 		public override string GetKeyWord ()
 		{
@@ -91,6 +92,7 @@ namespace DBAgent
 	public class PRIMARY_KEY : DBFieldAttribute
 	{
 		public static string s_key = "PRIMARY KEY";
+        public static string Key { get { return s_key; } }
 		public PRIMARY_KEY(){}
 		public override string GetKeyWord()
 		{
@@ -101,6 +103,7 @@ namespace DBAgent
 	public class NOT_NULL : DBFieldAttribute
 	{
 		public static string s_key = "NOT NULL";
+        public static string Key { get { return s_key; } }
 		public NOT_NULL(){}
 		public override string GetKeyWord()
 		{
@@ -111,6 +114,7 @@ namespace DBAgent
 	public class UNIQUE : DBFieldAttribute
 	{
 		public static string s_key = "UNIQUE";
+        public static string Key { get { return s_key; } }
 		public UNIQUE(){}
 		public override string GetKeyWord()
 		{

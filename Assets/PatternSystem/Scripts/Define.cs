@@ -40,7 +40,7 @@ namespace PatternSystem
 		public int			parentId;
 		public int			type;
 		public int			repeat;
-		public int			sequence;
+		public float			sequence;
 	}
 
 	public struct DBTimer
@@ -78,4 +78,15 @@ namespace PatternSystem
 		public float		time;
 		public int			sequence;
 	}
+
+    public class DBOverride
+    {
+        [PRIMARY_KEY, AUTOINCREMENT, NOT_NULL, UNIQUE]
+        public int id;
+    }
+
+    public class TypeA : DBOverride
+    {
+        public string type;
+    }
 }

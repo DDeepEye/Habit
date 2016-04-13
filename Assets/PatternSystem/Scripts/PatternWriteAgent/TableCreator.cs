@@ -24,6 +24,8 @@ public abstract class ClassMemberGetter
 				s_objects.Add(typeof(PatternSystem.DBPhysicalData));
 			if(!s_objects.Contains(typeof(PatternSystem.DBTimer)))
 				s_objects.Add(typeof(PatternSystem.DBTimer));
+            if (!s_objects.Contains(typeof(PatternSystem.TypeA)))
+                s_objects.Add(typeof(PatternSystem.TypeA));
 			return s_objects; 
 		} 
 	}
@@ -46,6 +48,7 @@ public abstract class ClassMemberGetter
 		{
 			sqlManager.CreateTable (table);
 		}
+        sqlManager.CommandQueries();
 	}
 
 }
@@ -125,9 +128,11 @@ public class TableCreator : MonoBehaviour {
 		}
 		*/
  
+        /*
 		MonoSQLiteManager msm = new MonoSQLiteManager("/PatternSystem/Resources/DB/PatternSystem.db");        
-		///ClassMemberGetter.CreateTable (msm);
+		ClassMemberGetter.CreateTable (msm);
         msm.DQDeleteColumn("DBTimere","tt");
+         * */
 
 
 	}

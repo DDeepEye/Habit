@@ -48,28 +48,26 @@ namespace DBAgent
             _columns = columns;
         }
 
-        public override void Run()
+        static public string GetQuery(MonoSQLiteManager dbManager, System.Type table)
+        {   
+            Dictionary<string, ColumnInfo> columns = new Dictionary<string, ColumnInfo>();
+            FieldInfo[] fields = table.GetFields();
+            for (int i = 0; i < fields.Length; ++i)
+            {
+                string attributes = DBFieldAttribute.GetDBAttributes(fields[i]);
+                ColumnInfo c = new ColumnInfo(fields[i].Name, dbManager.GetCTypeToSqlType(fields[i].FieldType), attributes);
+                columns.Add(c._name, c);
+            }
+
+            return GetQuery(dbManager, table.Name, columns);
+        }
+
+        static public string GetQuery(MonoSQLiteManager dbManager, string tableName, Dictionary<string, ColumnInfo> columns)
         {
-            if(_dbManager.IsExistenceTable(_tableName))
-            {
-                Debug.Log("Exist Table => " + _tableName);
 
-            }
-
-            if (_columns == null)
-            {
-                _columns = new Dictionary<string, ColumnInfo> ();
-                FieldInfo[] fields = _table.GetFields ();
-                for (int i = 0; i < fields.Length; ++i) 
-                {
-                    string attributes = DBFieldAttribute.GetDBAttributes (fields[i]);
-                    ColumnInfo c = new ColumnInfo (fields[i].Name, _dbManager.GetCTypeToSqlType(fields[i].FieldType), attributes);
-                    _columns.Add (c._name, c);
-                }
-            }
-            string q = "CREATE TABLE " + _tableName + " (";
+            string q = "CREATE TABLE " + tableName + " (";
             string q_fields = "";
-            foreach (KeyValuePair<string, ColumnInfo> c in _columns)
+            foreach (KeyValuePair<string, ColumnInfo> c in columns)
             {
                 if (q_fields.Length > 0)
                 {
@@ -85,8 +83,66 @@ namespace DBAgent
                 q_fields += c.Value._attribute;
             }
             q += q_fields;
-            q+=" )";
-            _dbManager.ExecuteNonQuery(q);
+            q += " )";
+            return q;
+        }
+
+        public override void Run()
+        {            
+
+            if (_columns == null)
+            {
+                _columns = _dbManager.GetTableColumnsInfo(_table);
+            }
+
+            if(_dbManager.IsExistenceTable(_tableName))
+            {
+                Debug.Log("Exist Table => " + _tableName);
+
+                Dictionary<string, ColumnInfo> dbColumns = _dbManager.GetDBTableColumnsInfo(_tableName);
+
+                if (dbColumns.Count == _columns.Count)
+                {
+                    bool isSame = true;
+                    foreach(KeyValuePair<string, ColumnInfo> c in dbColumns)
+                    {
+                        if (_columns.ContainsKey(c.Key))
+                        {
+                            if (_columns[c.Key]._dataType != c.Value._dataType)
+                            {
+                                isSame = false;
+                            }
+                        }
+                        else
+                        {
+                            isSame = false;
+                        }
+                    }
+
+                    if (isSame)
+                        return;
+                }
+                
+
+                if(!_isBackup)
+                {
+                    _dbManager.ExecuteNonQuery(DropTable.GetQuery(_dbManager, _tableName));
+                    _dbManager.ExecuteNonQuery(CreateTable.GetQuery(_dbManager, _tableName, _columns));
+                }
+                else
+                {
+                    string backupTableName = "_backup_" + _tableName;
+                    _dbManager.ExecuteNonQuery(CloneTable.GetQuery(_dbManager, _tableName, backupTableName));                    
+                    _dbManager.ExecuteNonQuery(DropTable.GetQuery(_dbManager, _tableName));
+                    _dbManager.ExecuteNonQuery(CreateTable.GetQuery(_dbManager, _tableName, _columns));
+                    _dbManager.ExecuteNonQuery(CopyTable.GetQuery(_dbManager, backupTableName, _tableName));
+                    _dbManager.ExecuteNonQuery(DropTable.GetQuery(_dbManager, backupTableName));
+                }   
+            }
+            else
+            {
+                _dbManager.ExecuteNonQuery(CreateTable.GetQuery(_dbManager, _tableName, _columns));
+            }
         }
 
         System.Type _table = null;
@@ -103,14 +159,18 @@ namespace DBAgent
             _tableName = tableName;
         }
 
+        static public string GetQuery(MonoSQLiteManager dbManaer, string tableName)
+        {
+            return "DELETE FROM " + tableName;
+        }
+
         public override void Run()
         {
             if (!_dbManager.IsExistenceTable(_tableName))
             {
                 Debug.Log("not Exist Table => " + _tableName);
-            }
-            string q = "DELETE FROM "+_tableName;
-            _dbManager.ExecuteNonQuery(q);
+            }            
+            _dbManager.ExecuteNonQuery(GetQuery(_dbManager, _tableName));
         }
 
         string _tableName;
@@ -123,6 +183,14 @@ namespace DBAgent
             _tableName = tableName;
         }
 
+        static public string GetQuery(MonoSQLiteManager dbManager, string tableName)
+        {
+            string q = "PRAGMA foreign_keys\n";
+            q += "PRAGMA foreign_keys = \"0\";";
+            q = "DROP TABLE " + "`"+tableName+"`";
+            return q;
+        }
+
         public override void Run()
         {
             if (!_dbManager.IsExistenceTable(_tableName))
@@ -130,13 +198,7 @@ namespace DBAgent
                 Debug.Log("Exist Table => " + _tableName);
 
             }
-
-            string q = "PRAGMA foreign_keys";        
-            _dbManager.ExecuteNonQuery(q);
-            q = "PRAGMA foreign_keys = \"0\"";
-            _dbManager.ExecuteNonQuery(q);
-            q = "DROP TABLE " + "`"+_tableName+"`";
-            _dbManager.ExecuteNonQuery(q);
+            _dbManager.ExecuteNonQuery(GetQuery(_dbManager, _tableName));
         }
 
         string _tableName;
@@ -150,10 +212,14 @@ namespace DBAgent
             _cloneName = cloneName;
         }
 
-        public override void Run()
+        static public string GetQuery(MonoSQLiteManager dbManager, string originName, string cloneName)
         {
-            string q = "CREATE TABLE "+_cloneName+" AS SELECT * FROM "+_originName;
-            _dbManager.ExecuteNonQuery(q);
+            return "CREATE TABLE " + cloneName + " AS SELECT * FROM " + originName;
+        }
+
+        public override void Run()
+        {            
+            _dbManager.ExecuteNonQuery(GetQuery(_dbManager, _originName, _cloneName));
         }
 
         string _originName;
@@ -169,17 +235,20 @@ namespace DBAgent
             _columnName = columnName;
         }
 
+        static public string GetQuery(MonoSQLiteManager dbManager, string tableName, string columnName, System.Type type)
+        {
+            string fieldType = dbManager.GetCTypeToSqlType(type);
+            return "ALTER TABLE " + tableName + " ADD COLUMN " + columnName + " " + fieldType;
+        }
+
         public override void Run()
         {
             if (_dbManager.IsExistenceTableInField(_tableName, _columnName))
             {
                 Debug.Log("Existence Field => " + _columnName);
 
-            }
-            string fieldType = _dbManager.GetCTypeToSqlType(_type);
-
-            string q = "ALTER TABLE " + _tableName + " ADD COLUMN " + _columnName +" "+ fieldType;
-            _dbManager.ExecuteNonQuery(q);
+            }            
+            _dbManager.ExecuteNonQuery(GetQuery(_dbManager, _tableName, _columnName, _type));
         }
 
         string _tableName;
@@ -195,38 +264,59 @@ namespace DBAgent
             _toCopyTable = toCopyTable;
         }
 
-        public override void Run()
+        static public string GetQuery(MonoSQLiteManager dbManager, string originName, string toCopyTable)
         {
-            Dictionary<string, ColumnInfo> copyColumns = _dbManager.GetDBTableColumnsInfo (_toCopyTable);
-            Dictionary<string, ColumnInfo> originColumns = _dbManager.GetDBTableColumnsInfo (_originName);
+            HashSet<string> notSameDataType = new HashSet<string>();
+            Dictionary<string, ColumnInfo> copyColumns = dbManager.GetDBTableColumnsInfo (toCopyTable);
+            Dictionary<string, ColumnInfo> selectColumns = dbManager.GetDBTableColumnsInfo (originName);
 
             foreach (KeyValuePair<string, ColumnInfo> c in copyColumns)
             {
-                if (originColumns.ContainsKey (c.Key))
+                if (selectColumns.ContainsKey (c.Key))
                 {
-                    if (originColumns [c.Key]._dataType != c.Value._dataType) 
+                    if (selectColumns [c.Key]._dataType != c.Value._dataType) 
                     {
+                        notSameDataType.Add(c.Key);
                     }
                 }
+                /*
+                if(c.Value._attribute.IndexOf(AUTOINCREMENT.Key) > 0 || 
+                    c.Value._attribute.IndexOf(PRIMARY_KEY.Key) > 0)
+                    notSameDataType.Add(c.Key);
+                 * */
             }
 
-            string insertQ = "INSERT INTO " + _toCopyTable + " ";
+            string insertQ = "INSERT INTO " + toCopyTable + " ";
             string selectQ = " SELECT ";
-            string columns = "";
+            string selectColumnsQ = "";
+            string insertColumnsQ = "(";
             foreach (KeyValuePair<string, ColumnInfo> column in copyColumns)
             {
-                if (columns.Length > 0)
-                {   
-                    columns += ",";
+                if (!notSameDataType.Contains(column.Key))
+                {
+                    if (selectColumnsQ.Length > 0)
+                    {
+                        selectColumnsQ += ",";
+                        insertColumnsQ += ",";
+                    }
+
+                    selectColumnsQ += "`";
+                    selectColumnsQ += column.Key;
+                    selectColumnsQ += "`";
+
+                    insertColumnsQ += column.Key;
                 }
-                columns += "`";
-                columns += column.Key;
-                columns += "`";
             }
-            selectQ += columns;
-            selectQ +=" FROM " + "`"+_originName + "`";
-            string q = insertQ + selectQ;
-            _dbManager.ExecuteNonQuery(q);
+            insertColumnsQ += ") ";
+            insertQ += insertColumnsQ;
+            selectQ += selectColumnsQ;
+            selectQ +=" FROM " + "`"+originName + "`";
+            return insertQ + selectQ;
+        }
+
+        public override void Run()
+        {
+            _dbManager.ExecuteNonQuery(GetQuery(_dbManager, _originName, _toCopyTable));
         }
         string _originName;
         string _toCopyTable;
@@ -371,7 +461,6 @@ namespace DBAgent
 			}
 			catch(Exception e)
 			{
-				
 				Debug.Log(e.ToString());
 				Debug.Log("Both records are written to database.");
                 _conn.Close();
