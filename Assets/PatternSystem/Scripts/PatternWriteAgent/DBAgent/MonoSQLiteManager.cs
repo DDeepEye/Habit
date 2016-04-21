@@ -370,6 +370,48 @@ namespace DBAgent
         T   _table;
     }
 
+    /*
+    public class UpdateTable<T> : QueryContainer
+    {
+        internal UpdateTable(MonoSQLiteManager dbManager, ref T table) : base(dbManager)
+        {
+            _table = table;
+        }
+
+        static public string GetQuery(MonoSQLiteManager dbManager, ref T table)
+        {
+            Dictionary<string, ColumnInfo> columns = dbManager.GetTableColumnsInfo(table.GetType());
+
+            System.Type type = table.GetType();
+            FieldInfo[] members = type.GetFields(BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Instance);
+
+            string q = "UPDATE " + table.GetType().Name + " SET";
+            string columns_q = "";
+
+            for (int i = 0; i < members.Length; ++i)
+            {
+                if (columns_q.Length > 0)
+                {
+                    columns_q += ",";
+                }
+
+                columns_q += members[i].Name;
+                columns_q += "=";
+                if (members[i].FieldType == typeof(string) || members[i].FieldType == typeof(char))
+                    columns_q += "`";
+                columns_q += members[i].GetValue(table).ToString();
+                if (members[i].FieldType == typeof(string) || members[i].FieldType == typeof(char))
+                    columns_q += "`";
+            }
+
+            q += columns_q + ")";
+            return q;
+        }
+
+        T _table;
+    }
+     * */
+
 	public class MonoSQLiteManager
 	{
         string _fileName = null;
@@ -732,7 +774,6 @@ namespace DBAgent
         {
             PushQuery(new DBAgent.CopyTable(this, originName, toCopyTable));
         }
-
 
 
 		public bool IsTypeCompare(string tableName, string columnName, System.Type type)
