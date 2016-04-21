@@ -9,10 +9,11 @@ public class SqliteManager : MonoBehaviour {
 
     public void Start()
     {
-		
+		/*
         Type type = typeof(PatternSystem.DBArrange);
         PatternSystem.DBArrange arrange = Activator.CreateInstance(type) as PatternSystem.DBArrange;
         arrange.sequence = 6.0f;
+         * */
 
         MonoSQLiteManager msm = new MonoSQLiteManager("/PatternSystem/Resources/DB/PatternSystem.db");
 		List<PatternSystem.DBArrange> arranges = msm.GetTableData<PatternSystem.DBArrange> ();
@@ -27,7 +28,6 @@ public class SqliteManager : MonoBehaviour {
                                 typeof( PatternSystem.DBTriger ),
                                 typeof( PatternSystem.DBTimer ),
                                 typeof( PatternSystem.DBCall ),
-                                typeof( PatternSystem.DBPhysicalData ),
                                 typeof( PatternSystem.DBPhysicalData ),
                                 };
 

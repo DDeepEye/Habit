@@ -385,7 +385,7 @@ namespace DBAgent
             System.Type type = table.GetType();
             FieldInfo[] members = type.GetFields(BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Instance);
 
-            string q = "UPDATE " + table.GetType().Name + " SET";
+            string q = "UPDATE " + type.Name + " SET";
             string columns_q = "";
 
             for (int i = 0; i < members.Length; ++i)
@@ -412,7 +412,7 @@ namespace DBAgent
     }
      * */
 
-	public class MonoSQLiteManager
+    public class MonoSQLiteManager
 	{
         string _fileName = null;
         string _filePath = null;
@@ -687,6 +687,52 @@ namespace DBAgent
             PushQuery(new DBAgent.InsertTable<T>(this, ref table));
         }
 
+        public T GetTableLastData<T>() where T : class, new()
+        {
+            T r = null;
+            System.Type type = typeof(T);
+			string tableName = type.Name;
+            if (IsExistenceTable(tableName))
+            {
+                FieldInfo[] members = type.GetFields(BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Instance | BindingFlags.SetField | BindingFlags.GetField);
+                string q = "SELECT rowid, * FROM "+tableName+" ORDER BY column DESC LIMIT 1";
+
+                SqliteDataReader reader = Read(q);
+                
+                if (reader.Read())
+                {
+                    r = new T();
+                    for (int i = 0; i < members.Length; ++i)
+                    {
+                        for (int k = 0; k < reader.FieldCount; ++k)
+                        {
+                            if (members[i].Name == reader.GetName(k))
+                            {
+                                if (members[i].FieldType == typeof(int))
+                                {
+                                    if (!reader.IsDBNull(k))
+                                        members[i].SetValue(r, reader.GetInt32(k));
+                                }
+                                else if (members[i].FieldType == typeof(float))
+                                {
+                                    if (!reader.IsDBNull(k))
+                                        members[i].SetValue(r, reader.GetFloat(k));
+                                }
+                                else
+                                {
+                                    if (!reader.IsDBNull(k))
+                                        members[i].SetValue(r, reader.GetString(k));
+                                }
+                            }
+                        }
+                    }
+                }
+
+                reader.Close();
+            }
+            return r;
+        }
+
 		public List<T> GetTableData<T>() 
             where T : class, new()
 		{
@@ -697,7 +743,7 @@ namespace DBAgent
 				List<T> table = new List<T>();
 
 				FieldInfo[] members = type.GetFields(BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Instance | BindingFlags.SetField | BindingFlags.GetField);
-				String q = "select rowid, * from " + tableName;
+				string q = "select rowid, * from " + tableName;
 
 				SqliteDataReader reader = Read (q);
 				while (reader.Read ())
