@@ -417,7 +417,6 @@ namespace DBAgent
 			_SqlTypeTocType.Add("INT", typeof(int));
             _SqlTypeTocType.Add("varchar", typeof(string));
             _SqlTypeTocType.Add("VARCHAR", typeof(string));
-
 		}
 
 		~MonoSQLiteManager()
@@ -645,6 +644,56 @@ namespace DBAgent
         {
             PushQuery(new DBAgent.InsertTable<T>(this, ref table));
         }
+
+		public List<T> GetTableData<T>() 
+            where T : class, new()
+		{
+			System.Type type = typeof(T);
+			string tableName = type.Name;
+			if (IsExistenceTable (tableName))
+			{
+				List<T> table = new List<T>();
+
+				FieldInfo[] members = type.GetFields(BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Instance | BindingFlags.SetField | BindingFlags.GetField);
+				String q = "select rowid, * from " + tableName;
+
+				SqliteDataReader reader = Read (q);
+				while (reader.Read ())
+				{
+					var row = new T();
+
+					for (int i = 0; i < members.Length; ++i) 	
+					{
+						for (int k = 0; k < reader.FieldCount; ++k)
+						{
+							if (members [i].Name == reader.GetName (k))
+                            {
+                                if (members[i].FieldType == typeof(int))
+                                {
+                                    if(!reader.IsDBNull(k))
+                                        members [i].SetValue (row, reader.GetInt32(k));
+                                }
+                                else if (members[i].FieldType == typeof(float))
+                                {
+                                    if(!reader.IsDBNull(k))
+                                        members [i].SetValue (row, reader.GetFloat(k));
+                                }
+                                else
+                                {
+                                    if(!reader.IsDBNull(k))
+                                        members[i].SetValue(row, reader.GetString(k));
+                                }
+							}
+						}
+					}
+					table.Add (row);
+				}
+				reader.Close ();
+
+				return table;
+			}
+			return null;
+		}
 
 		
 		public bool DQDeleteColumn(string tableName, string deleteColumnName)

@@ -18,13 +18,13 @@ namespace PatternSystem
 		MAX,
 	}
 
-	public struct DBHabit
+	public class DBHabit
 	{
 		[PRIMARY_KEY, AUTOINCREMENT, NOT_NULL, UNIQUE]
 		public int 		id;
 	}
 
-	public struct DBTriger
+	public class DBTriger
 	{
 		[PRIMARY_KEY, AUTOINCREMENT, NOT_NULL, UNIQUE]
 		public int 		id;
@@ -32,18 +32,18 @@ namespace PatternSystem
 		public string 		tirigerName;
 	}
 
-	public struct DBArrange
+	public class DBArrange
 	{
 		[PRIMARY_KEY, AUTOINCREMENT, NOT_NULL, UNIQUE]
-		public int			id;
+        public int id;
 		public int			parentType;
 		public int			parentId;
 		public int			type;
 		public int			repeat;
-		public float			sequence;
+		public float		sequence;
 	}
 
-	public struct DBTimer
+	public class DBTimer
 	{
 		[PRIMARY_KEY, AUTOINCREMENT, NOT_NULL, UNIQUE]
 		public int			id;
@@ -54,7 +54,7 @@ namespace PatternSystem
 		public int			sequence;
 	}
 
-	public struct DBCall
+	public class DBCall
 	{
 		[PRIMARY_KEY, AUTOINCREMENT, NOT_NULL, UNIQUE]
 		public int			id;
@@ -64,7 +64,7 @@ namespace PatternSystem
 		public int			sequence;
 	}
 
-	public struct DBPhysicalData
+	public class DBPhysicalData
 	{
 		[PRIMARY_KEY, AUTOINCREMENT, NOT_NULL, UNIQUE]
 		public int			id;
@@ -78,15 +78,4 @@ namespace PatternSystem
 		public float		time;
 		public int			sequence;
 	}
-
-    public class DBOverride
-    {
-        [PRIMARY_KEY, AUTOINCREMENT, NOT_NULL, UNIQUE]
-        public int id;
-    }
-
-    public class TypeA : DBOverride
-    {
-        public string type;
-    }
 }

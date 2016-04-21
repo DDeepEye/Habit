@@ -6,10 +6,10 @@ using System.Reflection;
 
 namespace DBAgent
 {
-	[AttributeUsage(AttributeTargets.Field,AllowMultiple = true)]
+	[AttributeUsage(AttributeTargets.Field | AttributeTargets.Property,AllowMultiple = true)]
 	public abstract class DBFieldAttribute : System.Attribute
 	{
-		static HashSet<System.Type> s_Attributes = new HashSet<Type>();
+		static HashSet<Type> s_Attributes = new HashSet<Type>();
 		static HashSet<string> s_AttributesName = new HashSet<string>();
 		static public string GetDBAttributes(System.Reflection.FieldInfo info)
 		{
