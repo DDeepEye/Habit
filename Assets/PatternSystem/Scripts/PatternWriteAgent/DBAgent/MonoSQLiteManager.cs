@@ -386,7 +386,10 @@ namespace DBAgent
             FieldInfo[] members = type.GetFields(BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Instance);
             FieldInfo key = dbManager.GetPrimaryKey(members);
             if (key == null)
+            {
+                Debug.Log("not Update None PrimaryKey table. name = " + type.Name);
                 return null;
+            }
 
             int keyindex = 0;
             for(int i = 0; i < members.Length; ++i)
@@ -716,12 +719,56 @@ namespace DBAgent
 
         public T GetTableLastData<T>() where T : class, new()
         {
-            List<T> rows= GetTableData<T>();
-            if (rows != null)
+            System.Type type = typeof(T);
+            FieldInfo[] members = type.GetFields(BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Instance | BindingFlags.SetField | BindingFlags.GetField);
+            FieldInfo key = GetPrimaryKey(members);
+            if(key != null)
             {
-                if(rows.Count > 0)
-                    return rows[rows.Count - 1];
+                string q = "SELECT * FROM "+type.Name+" WHERE "+key.Name+" = (SELECT MAX("+key.Name+")  FROM "+ type.Name+")";
+                SqliteDataReader r = Read(q);
+                T row = null;
+                if(r.Read())
+                {
+                    row = new T();
+
+                    for (int i = 0; i < members.Length; ++i)
+                    {
+                        for (int k = 0; k < r.FieldCount; ++k)
+                        {
+                            if (members[i].Name == r.GetName(k))
+                            {
+                                if (members[i].FieldType == typeof(int))
+                                {
+                                    if (!r.IsDBNull(k))
+                                        members[i].SetValue(row, r.GetInt32(k));
+                                }
+                                else if (members[i].FieldType == typeof(float))
+                                {
+                                    if (!r.IsDBNull(k))
+                                        members[i].SetValue(row, r.GetFloat(k));
+                                }
+                                else
+                                {
+                                    if (!r.IsDBNull(k))
+                                        members[i].SetValue(row, r.GetString(k));
+                                }
+                            }
+                        }
+                    }
+                }
+                r.Close();
+                return row;
             }
+            else
+            {
+                List<T> rows = GetTableData<T>();
+                if (rows != null)
+                {
+                    if (rows.Count > 0)
+                        return rows[rows.Count - 1];
+                }
+            }
+            
             return null;
         }
 
@@ -736,7 +783,6 @@ namespace DBAgent
 
 				FieldInfo[] members = type.GetFields(BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Instance | BindingFlags.SetField | BindingFlags.GetField);
                 FieldInfo key = GetPrimaryKey(members);
-                int keyindex = -1;
 
                 string q = "select rowid, * from " + tableName;
                 if (key != null)
