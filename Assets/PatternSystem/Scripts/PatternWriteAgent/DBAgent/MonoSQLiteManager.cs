@@ -370,7 +370,7 @@ namespace DBAgent
         T   _table;
     }
 
-    /*
+
     public class UpdateTable<T> : QueryContainer
     {
         internal UpdateTable(MonoSQLiteManager dbManager, ref T table) : base(dbManager)
@@ -384,12 +384,28 @@ namespace DBAgent
 
             System.Type type = table.GetType();
             FieldInfo[] members = type.GetFields(BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Instance);
+            FieldInfo key = dbManager.GetPrimaryKey(members);
+            if (key == null)
+                return null;
 
-            string q = "UPDATE " + type.Name + " SET";
+            int keyindex = 0;
+            for(int i = 0; i < members.Length; ++i)
+            {
+                if (key == members[i])
+                {
+                    keyindex = i;
+                    break;
+                }
+            }
+
+
+            string q = "UPDATE " + type.Name + " SET ";
             string columns_q = "";
 
             for (int i = 0; i < members.Length; ++i)
             {
+                if (keyindex == i)
+                    continue;
                 if (columns_q.Length > 0)
                 {
                     columns_q += ",";
@@ -404,13 +420,19 @@ namespace DBAgent
                     columns_q += "`";
             }
 
-            q += columns_q + ")";
+
+            q += columns_q + " where "+members[keyindex].Name+"= "+members[keyindex].GetValue(table).ToString();
             return q;
+        }
+        public override void Run()
+        {
+            _dbManager.ExecuteNonQuery(GetQuery(_dbManager, ref _table));
+
         }
 
         T _table;
     }
-     * */
+
 
     public class MonoSQLiteManager
 	{
@@ -687,50 +709,20 @@ namespace DBAgent
             PushQuery(new DBAgent.InsertTable<T>(this, ref table));
         }
 
+        public void UpdateTable<T>(ref T table)
+        {
+            PushQuery(new DBAgent.UpdateTable<T>(this, ref table));
+        }
+
         public T GetTableLastData<T>() where T : class, new()
         {
-            T r = null;
-            System.Type type = typeof(T);
-			string tableName = type.Name;
-            if (IsExistenceTable(tableName))
+            List<T> rows= GetTableData<T>();
+            if (rows != null)
             {
-                FieldInfo[] members = type.GetFields(BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Instance | BindingFlags.SetField | BindingFlags.GetField);
-                string q = "SELECT rowid, * FROM "+tableName+" ORDER BY column DESC LIMIT 1";
-
-                SqliteDataReader reader = Read(q);
-                
-                if (reader.Read())
-                {
-                    r = new T();
-                    for (int i = 0; i < members.Length; ++i)
-                    {
-                        for (int k = 0; k < reader.FieldCount; ++k)
-                        {
-                            if (members[i].Name == reader.GetName(k))
-                            {
-                                if (members[i].FieldType == typeof(int))
-                                {
-                                    if (!reader.IsDBNull(k))
-                                        members[i].SetValue(r, reader.GetInt32(k));
-                                }
-                                else if (members[i].FieldType == typeof(float))
-                                {
-                                    if (!reader.IsDBNull(k))
-                                        members[i].SetValue(r, reader.GetFloat(k));
-                                }
-                                else
-                                {
-                                    if (!reader.IsDBNull(k))
-                                        members[i].SetValue(r, reader.GetString(k));
-                                }
-                            }
-                        }
-                    }
-                }
-
-                reader.Close();
+                if(rows.Count > 0)
+                    return rows[rows.Count - 1];
             }
-            return r;
+            return null;
         }
 
 		public List<T> GetTableData<T>() 
@@ -743,9 +735,25 @@ namespace DBAgent
 				List<T> table = new List<T>();
 
 				FieldInfo[] members = type.GetFields(BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Instance | BindingFlags.SetField | BindingFlags.GetField);
-				string q = "select rowid, * from " + tableName;
+                FieldInfo key = GetPrimaryKey(members);
+                int keyindex = -1;
+
+                string q = "select rowid, * from " + tableName;
+                if (key != null)
+                {
+                    for(int i = 0; i < members.Length; ++i)
+                    {
+                        if (key == members[i])
+                        {
+                            q += " order by";
+                            q += " " + members[i].Name + " asc";
+                            break;
+                        }
+                    }
+                }
 
 				SqliteDataReader reader = Read (q);
+            
 				while (reader.Read ())
 				{
 					var row = new T();
@@ -777,11 +785,92 @@ namespace DBAgent
 					table.Add (row);
 				}
 				reader.Close ();
-
 				return table;
 			}
 			return null;
 		}
+
+        public SortedDictionary<int, T> GetTableDataToMap<T>()
+            where T : class, new()
+        {
+            System.Type type = typeof(T);
+            string tableName = type.Name;
+            if (IsExistenceTable (tableName))
+            {
+                SortedDictionary<int, T> table = new SortedDictionary<int, T>();
+
+                FieldInfo[] members = type.GetFields(BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Instance | BindingFlags.SetField | BindingFlags.GetField);
+                FieldInfo key = GetPrimaryKey(members);
+                if (key == null)
+                    return null;
+
+                int keyindex = 0;
+                for(int i = 0; i < members.Length; ++i)
+                {
+                    if (key == members[i])
+                    {
+                        keyindex = i;
+                        break;
+                    }
+                }
+
+                
+                string q = "select rowid, * from " + tableName;
+
+                SqliteDataReader reader = Read (q);
+
+                while (reader.Read ())
+                {
+                    var row = new T();
+
+                    for (int i = 0; i < members.Length; ++i)    
+                    {
+                        for (int k = 0; k < reader.FieldCount; ++k)
+                        {
+                            if (members [i].Name == reader.GetName (k))
+                            {
+                                if (members[i].FieldType == typeof(int))
+                                {
+                                    if(!reader.IsDBNull(k))
+                                        members [i].SetValue (row, reader.GetInt32(k));
+                                }
+                                else if (members[i].FieldType == typeof(float))
+                                {
+                                    if(!reader.IsDBNull(k))
+                                        members [i].SetValue (row, reader.GetFloat(k));
+                                }
+                                else
+                                {
+                                    if(!reader.IsDBNull(k))
+                                        members[i].SetValue(row, reader.GetString(k));
+                                }
+                            }
+                        }
+                    }
+                    var rowid = members[keyindex].GetValue(row);
+
+                    table.Add (int.Parse(rowid.ToString()),row);
+
+                }
+                reader.Close ();
+                return table;
+            }
+            return null;
+        }
+
+        public FieldInfo GetPrimaryKey(FieldInfo[] fields)
+        {
+            foreach (FieldInfo field in fields)
+            {
+                string attributes = DBFieldAttribute.GetDBAttributes(field);
+                if (attributes.IndexOf(PRIMARY_KEY.Key) >= 0)
+                {
+                    return field;
+                }
+                
+            }
+            return null;
+        }
 
 		
 		public bool DQDeleteColumn(string tableName, string deleteColumnName)
