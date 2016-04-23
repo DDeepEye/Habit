@@ -848,7 +848,10 @@ namespace DBAgent
                 FieldInfo[] members = type.GetFields(BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Instance | BindingFlags.SetField | BindingFlags.GetField);
                 FieldInfo key = GetPrimaryKey(members);
                 if (key == null)
+                {
+                    Debug.Log("None Primary Key " + tableName + " !!!");
                     return null;
+                }
 
                 int keyindex = 0;
                 for(int i = 0; i < members.Length; ++i)
