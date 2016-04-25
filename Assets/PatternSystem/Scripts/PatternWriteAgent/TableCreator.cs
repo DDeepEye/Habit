@@ -18,25 +18,13 @@ public abstract class TableCreator
 		} 
 	}
 
-    public static void PushTable(System.Type [] types)
+    public static void PushTables(System.Type [] tables)
     {
-        for (int i = 0; i < types.Length; ++i)
+        for (int i = 0; i < tables.Length; ++i)
         {
-            s_objects.Add(types[i]);
+            s_objects.Add(tables[i]);
         }
     }
-
-    protected TableCreator()
-    {
-		if(!s_objects.Contains(this.GetType()))
-        	s_objects.Add(this.GetType());
-    }
-    public FieldInfo[] GetMembers()
-	{
-		System.Type type = GetType();
-		FieldInfo[] members = type.GetFields(BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Instance);
-		return members;
-	}
 
 	static public void CreateTable(MonoSQLiteManager sqlManager)
 	{

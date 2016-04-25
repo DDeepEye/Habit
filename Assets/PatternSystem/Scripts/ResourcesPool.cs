@@ -49,6 +49,10 @@ namespace PatternSystem
 		};
 		Dictionary<EditorPrefabList, Object> _editorPrefabs = new Dictionary<EditorPrefabList, Object>();
 
+        Dictionary<System.Type, Dictionary<int, DBBaseTable> > _tables = new Dictionary<System.Type, Dictionary<int, DBBaseTable> >();
+
+        static DBAgent.MonoSQLiteManager _dbManager = null;
+
 		void Init()
 		{
 			for (int i = 0; i < _editorPrefabPaths.Length; ++i) 
@@ -56,15 +60,63 @@ namespace PatternSystem
                 Object o = AssetDatabase.LoadAssetAtPath(_editorPrefabPaths[i]._path, typeof(Object));
 				_editorPrefabs.Add (_editorPrefabPaths [i]._key, o);
 			}
+            _dbManager = new MonoSQLiteManager("/PatternSystem/Resources/DB/PatternSystem.db");
+            LoadTables();
 		}
 
+        private void CreateDBTable()
+        {
+            MonoSQLiteManager _dbManager = new MonoSQLiteManager("/PatternSystem/Resources/DB/PatternSystem.db");
+            System.Type[] tables = {
+                typeof( DBArrange ),
+                typeof( DBHabit ),
+                typeof( DBTriger ),
+                typeof( DBTimer ),
+                typeof( DBCall ),
+                typeof( DBPhysicalData ),
+            };
 
-
-
+            TableCreator.PushTables(tables);
+            TableCreator.CreateTable(_dbManager);
+        }
 		public Object GetEditorPrefab(EditorPrefabList key)
 		{
 			return _editorPrefabs [key];
 		}
+
+        private void LoadTable<T>()
+            where T : DBBaseTable, new()
+        {
+            List<T> table = _dbManager.GetTableData<T>();
+            Dictionary<int, DBBaseTable> tableMap = new Dictionary<int, DBBaseTable>();
+            foreach (T ar in table)
+            {
+                tableMap.Add(ar.id, ar);
+            }
+            _tables.Add(typeof(T),tableMap);
+        }
+        public void LoadTables()
+        {
+            LoadTable<DBArrange>();
+            LoadTable<DBHabit>();
+            LoadTable<DBTriger>();
+            LoadTable<DBTimer>();
+            LoadTable<DBCall>();
+            LoadTable<DBPhysicalData>();
+        }
+
+        public Dictionary<int, DBBaseTable> GetTableData<T>()
+            where T : DBBaseTable
+        {
+            return _tables[typeof(T)];
+        }
+
+        public T GetTableRow<T>(int id)
+            where T : DBBaseTable, new()
+        {
+            Dictionary<int, DBBaseTable> table = GetTableData<T>();
+            return table[id] as T;
+        }
 	}
 }
 

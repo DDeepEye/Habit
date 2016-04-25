@@ -18,24 +18,25 @@ namespace PatternSystem
 		MAX,
 	}
 
-	public class DBHabit
+    public abstract class DBBaseTable
+    {
+        [PRIMARY_KEY, AUTOINCREMENT, NOT_NULL, UNIQUE]
+        public int      id;
+    }
+
+    public class DBHabit : DBBaseTable
 	{
-		[PRIMARY_KEY, AUTOINCREMENT, NOT_NULL, UNIQUE]
-		public int 		id;
+		
 	}
 
-	public class DBTriger
+    public class DBTriger : DBBaseTable
 	{
-		[PRIMARY_KEY, AUTOINCREMENT, NOT_NULL, UNIQUE]
-		public int 		id;
 		public int 		habitId;
 		public string 		tirigerName;
 	}
 
-	public class DBArrange
+    public class DBArrange : DBBaseTable
 	{
-		[PRIMARY_KEY, AUTOINCREMENT, NOT_NULL, UNIQUE]
-        public int id;
 		public int			parentType;
 		public int			parentId;
 		public int			type;
@@ -43,10 +44,8 @@ namespace PatternSystem
 		public float		sequence;
 	}
 
-	public class DBTimer
+    public class DBTimer : DBBaseTable
 	{
-		[PRIMARY_KEY, AUTOINCREMENT, NOT_NULL, UNIQUE]
-		public int			id;
 		public string		parentType;
 		public int			parentId;
 		public int			isRelative;
@@ -54,20 +53,16 @@ namespace PatternSystem
 		public int			sequence;
 	}
 
-	public class DBCall
+    public class DBCall : DBBaseTable
 	{
-		[PRIMARY_KEY, AUTOINCREMENT, NOT_NULL, UNIQUE]
-		public int			id;
 		public string		parentType;
 		public int			parentId;
 		public string		callName;
 		public int			sequence;
 	}
 
-	public class DBPhysicalData
+    public class DBPhysicalData : DBBaseTable
 	{
-		[PRIMARY_KEY, AUTOINCREMENT, NOT_NULL, UNIQUE]
-		public int			id;
 		public string		parentType;
 		public int			parentId;
 		public string		physicalType;

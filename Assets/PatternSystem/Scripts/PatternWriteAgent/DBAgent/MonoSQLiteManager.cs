@@ -336,7 +336,7 @@ namespace DBAgent
             Dictionary<string, ColumnInfo> columns = dbManager.GetTableColumnsInfo(table.GetType());
 
             System.Type type = table.GetType();
-            FieldInfo[] members = type.GetFields(BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Instance);            
+            FieldInfo[] members = type.GetFields(BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Instance | BindingFlags.SetField | BindingFlags.GetField);            
 
             string q = "INSERT INTO " + table.GetType().Name + " (";
             string columns_q = "";
@@ -383,7 +383,7 @@ namespace DBAgent
             Dictionary<string, ColumnInfo> columns = dbManager.GetTableColumnsInfo(table.GetType());
 
             System.Type type = table.GetType();
-            FieldInfo[] members = type.GetFields(BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Instance);
+                        FieldInfo[] members = type.GetFields(BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Instance | BindingFlags.SetField | BindingFlags.GetField);
             FieldInfo key = dbManager.GetPrimaryKey(members);
             if (key == null)
             {
