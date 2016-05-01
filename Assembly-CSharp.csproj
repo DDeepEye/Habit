@@ -45,6 +45,8 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+     <Compile Include="Assets\PatternSystem\Scripts\DBAgent\MonoSQLiteManager.cs" />
+     <Compile Include="Assets\PatternSystem\Scripts\DBAgent\PropertyAttribute.cs" />
      <Compile Include="Assets\PatternSystem\Scripts\Define.cs" />
      <Compile Include="Assets\PatternSystem\Scripts\HabitCast\Arrange.cs" />
      <Compile Include="Assets\PatternSystem\Scripts\HabitCast\Attribute.cs" />
@@ -57,11 +59,6 @@
      <Compile Include="Assets\PatternSystem\Scripts\HabitCast\Scale.cs" />
      <Compile Include="Assets\PatternSystem\Scripts\HabitCast\Timer.cs" />
      <Compile Include="Assets\PatternSystem\Scripts\HabitCast\Triger.cs" />
-     <Compile Include="Assets\PatternSystem\Scripts\InitData.cs" />
-     <Compile Include="Assets\PatternSystem\Scripts\PatternWriteAgent\DBAgent\MonoSQLiteManager.cs" />
-     <Compile Include="Assets\PatternSystem\Scripts\PatternWriteAgent\DBAgent\PropertyAttribute.cs" />
-     <Compile Include="Assets\PatternSystem\Scripts\PatternWriteAgent\TableCreator.cs" />
-     <Compile Include="Assets\PatternSystem\Scripts\ResourcesPool.cs" />
      <Compile Include="Assets\SimpleSQL\Demos\Scripts\01_SimpleQuery\SimpleQuery.cs" />
      <Compile Include="Assets\SimpleSQL\Demos\Scripts\02_ComplexQuery\ComplexQuery.cs" />
      <Compile Include="Assets\SimpleSQL\Demos\Scripts\03_Insert\InsertCommand.cs" />
@@ -84,10 +81,10 @@
  <HintPath>/Users/leejihoon/Desktop/Developer/Projects/GitHub/Habit/Assets/SimpleSQL/Plugins/SimpleSQL_Runtime.dll</HintPath>
  </Reference>
  <Reference Include="System.Data">
- <HintPath>/Users/leejihoon/Desktop/Developer/Projects/GitHub/Habit/Assets/PatternSystem/Scripts/PatternWriteAgent/DBAgent/PlugIn/System.Data.dll</HintPath>
+ <HintPath>/Users/leejihoon/Desktop/Developer/Projects/GitHub/Habit/Assets/PatternSystem/Scripts/DBAgent/PlugIn/System.Data.dll</HintPath>
  </Reference>
  <Reference Include="Mono.Data.Sqlite">
- <HintPath>/Users/leejihoon/Desktop/Developer/Projects/GitHub/Habit/Assets/PatternSystem/Scripts/PatternWriteAgent/DBAgent/PlugIn/Mono.Data.Sqlite.dll</HintPath>
+ <HintPath>/Users/leejihoon/Desktop/Developer/Projects/GitHub/Habit/Assets/PatternSystem/Scripts/DBAgent/PlugIn/Mono.Data.Sqlite.dll</HintPath>
  </Reference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

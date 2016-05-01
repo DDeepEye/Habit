@@ -3,7 +3,7 @@ using System.Collections;
 
 namespace PatternSystem
 {
-    public class Call : MonoBehaviour
+    public class Call : Attribute
     {
         protected EditorPrefabList _attributeType;
         public EditorPrefabList AttributeType { get { return _attributeType; } }
@@ -11,6 +11,10 @@ namespace PatternSystem
         public Call()
         {
             _attributeType = EditorPrefabList.CALL;
+        }
+
+        public override void Run(GameObject target)
+        {
         }
     }
 }

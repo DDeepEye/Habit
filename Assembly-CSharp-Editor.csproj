@@ -48,6 +48,8 @@
      <Compile Include="Assets\PatternSystem\Editor\Scripts\ArrangeEditor.cs" />
      <Compile Include="Assets\PatternSystem\Editor\Scripts\AttributeEditor.cs" />
      <Compile Include="Assets\PatternSystem\Editor\Scripts\HabitEditor.cs" />
+     <Compile Include="Assets\PatternSystem\Editor\Scripts\ResourcesPool.cs" />
+     <Compile Include="Assets\PatternSystem\Editor\Scripts\TableCreator.cs" />
      <Compile Include="Assets\PatternSystem\Editor\Scripts\TrigerEditor.cs" />
      <None Include="Assets\SimpleSQL\readme.txt" />
  <Reference Include="UnityEditor.Advertisements">
@@ -93,10 +95,10 @@
  <HintPath>/Applications/Unity/PlaybackEngines/MacStandaloneSupport/UnityEditor.OSXStandalone.Extensions.dll</HintPath>
  </Reference>
  <Reference Include="System.Data">
- <HintPath>/Users/leejihoon/Desktop/Developer/Projects/GitHub/Habit/Assets/PatternSystem/Scripts/PatternWriteAgent/DBAgent/PlugIn/System.Data.dll</HintPath>
+ <HintPath>/Users/leejihoon/Desktop/Developer/Projects/GitHub/Habit/Assets/PatternSystem/Scripts/DBAgent/PlugIn/System.Data.dll</HintPath>
  </Reference>
  <Reference Include="Mono.Data.Sqlite">
- <HintPath>/Users/leejihoon/Desktop/Developer/Projects/GitHub/Habit/Assets/PatternSystem/Scripts/PatternWriteAgent/DBAgent/PlugIn/Mono.Data.Sqlite.dll</HintPath>
+ <HintPath>/Users/leejihoon/Desktop/Developer/Projects/GitHub/Habit/Assets/PatternSystem/Scripts/DBAgent/PlugIn/Mono.Data.Sqlite.dll</HintPath>
  </Reference>
  <Reference Include="UnityEditor.iOS.Extensions.Xcode">
  <HintPath>/Applications/Unity/PlaybackEngines/iOSSupport/UnityEditor.iOS.Extensions.Xcode.dll</HintPath>

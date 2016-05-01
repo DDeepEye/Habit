@@ -5,9 +5,7 @@ using System.Collections.Generic;
 using DBAgent;
 
 namespace PatternSystem
-{
-	
-	public class ResourcesPool
+{	public class ResourcesPool
 	{
 		private static ResourcesPool s_instance;
 		public static ResourcesPool Instance 
@@ -37,15 +35,15 @@ namespace PatternSystem
 		}
 
 		EditorPrefabInfo [] _editorPrefabPaths = new EditorPrefabInfo[]{
-			new EditorPrefabInfo(EditorPrefabList.HABIT, "Assets/Editor/EditorPrefabs/Habit.prefab", typeof(DBHabit)),
-			new EditorPrefabInfo(EditorPrefabList.TRIGER, "Assets/Editor/EditorPrefabs/Triger.prefab", typeof(DBTriger)),
-			new EditorPrefabInfo(EditorPrefabList.ARRANGE, "Assets/Editor/EditorPrefabs/Arrange.prefab", typeof(DBArrange)),
-			new EditorPrefabInfo(EditorPrefabList.MOVE, "Assets/Editor/EditorPrefabs/Move.prefab", typeof(DBPhysicalData)),
-			new EditorPrefabInfo(EditorPrefabList.SCALE, "Assets/Editor/EditorPrefabs/Scale.prefab", typeof(DBPhysicalData)),
-			new EditorPrefabInfo(EditorPrefabList.ROTATION, "Assets/Editor/EditorPrefabs/Rotation.prefab", typeof(DBPhysicalData)),
-			new EditorPrefabInfo(EditorPrefabList.ORBIT, "Assets/Editor/EditorPrefabs/Orbit.prefab", typeof(DBPhysicalData)),
-			new EditorPrefabInfo(EditorPrefabList.TIMER, "Assets/Editor/EditorPrefabs/Timer.prefab", typeof(DBTimer)),
-			new EditorPrefabInfo(EditorPrefabList.CALL, "Assets/Editor/EditorPrefabs/Call.prefab", typeof(DBCall)),
+			new EditorPrefabInfo(EditorPrefabList.HABIT, "Assets/PatternSystem/Editor/EditorPrefabs/Habit.prefab", typeof(DBHabit)),
+            new EditorPrefabInfo(EditorPrefabList.TRIGER, "Assets/PatternSystem/Editor/EditorPrefabs/Triger.prefab", typeof(DBTriger)),
+            new EditorPrefabInfo(EditorPrefabList.ARRANGE, "Assets/PatternSystem/Editor/EditorPrefabs/Arrange.prefab", typeof(DBArrange)),
+            new EditorPrefabInfo(EditorPrefabList.MOVE, "Assets/PatternSystem/Editor/EditorPrefabs/Move.prefab", typeof(DBPhysicalData)),
+            new EditorPrefabInfo(EditorPrefabList.SCALE, "Assets/PatternSystem/Editor/EditorPrefabs/Scale.prefab", typeof(DBPhysicalData)),
+            new EditorPrefabInfo(EditorPrefabList.ROTATION, "Assets/PatternSystem/Editor/EditorPrefabs/Rotation.prefab", typeof(DBPhysicalData)),
+            new EditorPrefabInfo(EditorPrefabList.ORBIT, "Assets/PatternSystem/Editor/EditorPrefabs/Orbit.prefab", typeof(DBPhysicalData)),
+            new EditorPrefabInfo(EditorPrefabList.TIMER, "Assets/PatternSystem/Editor/EditorPrefabs/Timer.prefab", typeof(DBTimer)),
+            new EditorPrefabInfo(EditorPrefabList.CALL, "Assets/PatternSystem/Editor/EditorPrefabs/Call.prefab", typeof(DBCall)),
 		};
 		Dictionary<EditorPrefabList, Object> _editorPrefabs = new Dictionary<EditorPrefabList, Object>();
 
@@ -64,7 +62,8 @@ namespace PatternSystem
             LoadTables();
 		}
 
-        private void CreateDBTable()
+        [MenuItem("Tools/PatterSystem/CreateDBTable")]
+        static private void CreateDBTable()
         {
             MonoSQLiteManager _dbManager = new MonoSQLiteManager("/PatternSystem/Resources/DB/PatternSystem.db");
             System.Type[] tables = {

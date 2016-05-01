@@ -9,6 +9,10 @@ namespace PatternSystem
         {
             _attributeType = EditorPrefabList.ROTATION;
         }
+
+        public override void Run(GameObject target)
+        {
+        }
     }
 }
 

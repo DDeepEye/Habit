@@ -8,6 +8,8 @@ namespace PatternSystem
 
         protected EditorPrefabList _attributeType;
         public EditorPrefabList AttributeType { get { return _attributeType; } }
+        protected bool _isDone = false;
+        public bool IsDone {get{ return _isDone;}}
 
 		public List<Attribute> CollectAttribute()
 		{
@@ -24,5 +26,10 @@ namespace PatternSystem
 			}
 			return trigers;
 		}
+        public abstract void Run(GameObject target);
+        public virtual void Reset()
+        {
+            _isDone = false;
+        }
 	}
 }

@@ -9,5 +9,9 @@ namespace PatternSystem
         {
             _attributeType = EditorPrefabList.ORBIT;
         }
+
+        public override void Run(GameObject target)
+        {
+        }
     }
 }

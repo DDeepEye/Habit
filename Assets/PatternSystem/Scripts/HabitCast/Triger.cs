@@ -21,18 +21,22 @@ namespace PatternSystem
 
 		public List<Attribute> CollectAttribute()
 		{
-			List<Attribute> trigers = new List<Attribute> ();
+			List<Attribute> attributes = new List<Attribute> ();
 			int cnt = transform.GetChildCount();
 			for (int i = 0; i < cnt; ++i)
 			{
 				Transform t = transform.GetChild (i);
-				Attribute triger = t.gameObject.GetComponent<Attribute> ();
-				if (triger != null)
+				Attribute attribute = t.gameObject.GetComponent<Attribute> ();
+                if (attribute != null)
 				{
-					trigers.Add (triger);
+                    attributes.Add (attribute);
 				}				
 			}
-			return trigers;
+            return attributes;
 		}
+
+        public void Run(GameObject target)
+        {
+        }
 	}
 }

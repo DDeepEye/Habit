@@ -10,6 +10,10 @@ namespace PatternSystem
         {
             _attributeType = EditorPrefabList.MOVE;
         }
+
+        public override void Run(GameObject target)
+        {
+        }
 	}
 
 }

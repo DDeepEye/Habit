@@ -28,7 +28,6 @@ namespace PatternSystem
 				}				
 			}
 			return trigers;
-
 		}
 	}
 }

@@ -10,5 +10,9 @@ namespace PatternSystem
         {
             _attributeType = EditorPrefabList.SCALE;
         }
+
+        public override void Run(GameObject target)
+        {
+        }
     }
 }

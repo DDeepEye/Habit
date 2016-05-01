@@ -17,6 +17,12 @@ namespace PatternSystem
 
 		public Type _type = Type.SERIES;
 		public int _repeat = 1;
+
+        public override void Run(GameObject target)
+        {
+        }
+
+
 	}
 }
 
