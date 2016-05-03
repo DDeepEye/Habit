@@ -48,17 +48,17 @@
      <Compile Include="Assets\PatternSystem\Scripts\DBAgent\MonoSQLiteManager.cs" />
      <Compile Include="Assets\PatternSystem\Scripts\DBAgent\PropertyAttribute.cs" />
      <Compile Include="Assets\PatternSystem\Scripts\Define.cs" />
-     <Compile Include="Assets\PatternSystem\Scripts\HabitCast\Arrange.cs" />
-     <Compile Include="Assets\PatternSystem\Scripts\HabitCast\Attribute.cs" />
-     <Compile Include="Assets\PatternSystem\Scripts\HabitCast\Call.cs" />
-     <Compile Include="Assets\PatternSystem\Scripts\HabitCast\Habit.cs" />
-     <Compile Include="Assets\PatternSystem\Scripts\HabitCast\Move.cs" />
-     <Compile Include="Assets\PatternSystem\Scripts\HabitCast\Orbit.cs" />
-     <Compile Include="Assets\PatternSystem\Scripts\HabitCast\Physical.cs" />
-     <Compile Include="Assets\PatternSystem\Scripts\HabitCast\Rotation.cs" />
-     <Compile Include="Assets\PatternSystem\Scripts\HabitCast\Scale.cs" />
-     <Compile Include="Assets\PatternSystem\Scripts\HabitCast\Timer.cs" />
-     <Compile Include="Assets\PatternSystem\Scripts\HabitCast\Triger.cs" />
+     <Compile Include="Assets\PatternSystem\Scripts\HabitCast\ArrangeAgent.cs" />
+     <Compile Include="Assets\PatternSystem\Scripts\HabitCast\AttributeAgent.cs" />
+     <Compile Include="Assets\PatternSystem\Scripts\HabitCast\CallAgent.cs" />
+     <Compile Include="Assets\PatternSystem\Scripts\HabitCast\HabitAgent.cs" />
+     <Compile Include="Assets\PatternSystem\Scripts\HabitCast\MoveAgent.cs" />
+     <Compile Include="Assets\PatternSystem\Scripts\HabitCast\OrbitAgent.cs" />
+     <Compile Include="Assets\PatternSystem\Scripts\HabitCast\PhysicalAgent.cs" />
+     <Compile Include="Assets\PatternSystem\Scripts\HabitCast\RotationAgent.cs" />
+     <Compile Include="Assets\PatternSystem\Scripts\HabitCast\ScaleAgent.cs" />
+     <Compile Include="Assets\PatternSystem\Scripts\HabitCast\TimerAgent.cs" />
+     <Compile Include="Assets\PatternSystem\Scripts\HabitCast\TrigerAgent.cs" />
      <Compile Include="Assets\SimpleSQL\Demos\Scripts\01_SimpleQuery\SimpleQuery.cs" />
      <Compile Include="Assets\SimpleSQL\Demos\Scripts\02_ComplexQuery\ComplexQuery.cs" />
      <Compile Include="Assets\SimpleSQL\Demos\Scripts\03_Insert\InsertCommand.cs" />
@@ -77,14 +77,14 @@
  <Reference Include="UnityEngine.Networking">
  <HintPath>/Applications/Unity/Unity.app/Contents/UnityExtensions/Unity/Networking/UnityEngine.Networking.dll</HintPath>
  </Reference>
- <Reference Include="SimpleSQL_Runtime">
- <HintPath>/Users/leejihoon/Desktop/Developer/Projects/GitHub/Habit/Assets/SimpleSQL/Plugins/SimpleSQL_Runtime.dll</HintPath>
+ <Reference Include="Mono.Data.Sqlite">
+ <HintPath>/Users/leejihoon/Desktop/Developer/Projects/GitHub/Habit/Assets/PatternSystem/Scripts/DBAgent/PlugIn/Mono.Data.Sqlite.dll</HintPath>
  </Reference>
  <Reference Include="System.Data">
  <HintPath>/Users/leejihoon/Desktop/Developer/Projects/GitHub/Habit/Assets/PatternSystem/Scripts/DBAgent/PlugIn/System.Data.dll</HintPath>
  </Reference>
- <Reference Include="Mono.Data.Sqlite">
- <HintPath>/Users/leejihoon/Desktop/Developer/Projects/GitHub/Habit/Assets/PatternSystem/Scripts/DBAgent/PlugIn/Mono.Data.Sqlite.dll</HintPath>
+ <Reference Include="SimpleSQL_Runtime">
+ <HintPath>/Users/leejihoon/Desktop/Developer/Projects/GitHub/Habit/Assets/SimpleSQL/Plugins/SimpleSQL_Runtime.dll</HintPath>
  </Reference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

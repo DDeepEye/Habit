@@ -6,17 +6,12 @@ using System.Collections.Generic;
 
 namespace PatternSystem
 {
-	[CustomEditor(typeof(Attribute))]
+    [CustomEditor(typeof(AttributeAgent))]
 	public class AttributeEditor : Editor {
 
-		protected Attribute _attribute;
+        protected AttributeAgent _attribute;
 		void OnEnable () {
-			_attribute = target as Attribute;
-		}
-
-		public List<Attribute> CollectAttribute()
-		{
-			return _attribute.CollectAttribute();
+            _attribute = target as AttributeAgent;
 		}
 	}
 }

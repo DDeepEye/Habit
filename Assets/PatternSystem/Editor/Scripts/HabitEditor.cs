@@ -6,30 +6,36 @@ using System.Collections.Generic;
 
 namespace PatternSystem
 {
-	[CustomEditor(typeof(Habit))]
+    [CustomEditor(typeof(HabitAgent))]
 	public class HabitEditor : Editor {
 
-		Habit _habit;
+        HabitAgent _habit;
 
 
 		void OnEnable () {
 
-			_habit = target as Habit;
-
-
+            _habit = target as HabitAgent;
 		}
 
 		public override void OnInspectorGUI()
 		{
 			EditorGUILayout.BeginVertical ();
 			{
-				if(GUILayout.Button("Add Triger"))
-				{
-					PatternSystem.EditorPrefabList key = PatternSystem.EditorPrefabList.TRIGER;
-					Object habit = PatternSystem.ResourcesPool.Instance.GetEditorPrefab (key);
-					GameObject triger = PrefabUtility.InstantiatePrefab(habit) as GameObject;
-					triger.transform.SetParent (_habit.transform);
-				}
+                if (_habit.transform.parent != null)
+                {
+                    _habit._comment = EditorGUILayout.TextField("Habit Comment", _habit._comment);
+                    if (GUILayout.Button("Add Triger"))
+                    {
+                        PatternSystem.EditorPrefabList key = PatternSystem.EditorPrefabList.TRIGER;
+                        Object habit = PatternSystem.ResourcesPool.Instance.GetEditorPrefab(key);
+                        GameObject triger = PrefabUtility.InstantiatePrefab(habit) as GameObject;
+                        triger.transform.SetParent(_habit.transform);
+                    }
+                }
+                else
+                {
+                    GUILayout.Box("absolute Habit to GameObject child");
+                }
 			}
 			EditorGUILayout.EndVertical ();
 
@@ -39,10 +45,6 @@ namespace PatternSystem
 
 		}
 
-		public List<Triger> CollectTriger()
-		{
-			return _habit.CollectTriger();
-		}
 	}
 }
 

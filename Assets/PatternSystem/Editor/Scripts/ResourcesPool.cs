@@ -7,6 +7,7 @@ using DBAgent;
 namespace PatternSystem
 {	public class ResourcesPool
 	{
+        private const string PATH = "/PatternSystem/Resources/DB/PatternSystem.db";
 		private static ResourcesPool s_instance;
 		public static ResourcesPool Instance 
 		{
@@ -49,8 +50,6 @@ namespace PatternSystem
 
         Dictionary<System.Type, Dictionary<int, DBBaseTable> > _tables = new Dictionary<System.Type, Dictionary<int, DBBaseTable> >();
 
-        static DBAgent.MonoSQLiteManager _dbManager = null;
-
 		void Init()
 		{
 			for (int i = 0; i < _editorPrefabPaths.Length; ++i) 
@@ -58,14 +57,13 @@ namespace PatternSystem
                 Object o = AssetDatabase.LoadAssetAtPath(_editorPrefabPaths[i]._path, typeof(Object));
 				_editorPrefabs.Add (_editorPrefabPaths [i]._key, o);
 			}
-            _dbManager = new MonoSQLiteManager("/PatternSystem/Resources/DB/PatternSystem.db");
             LoadTables();
 		}
 
         [MenuItem("Tools/PatterSystem/CreateDBTable")]
         static private void CreateDBTable()
         {
-            MonoSQLiteManager _dbManager = new MonoSQLiteManager("/PatternSystem/Resources/DB/PatternSystem.db");
+            
             System.Type[] tables = {
                 typeof( DBArrange ),
                 typeof( DBHabit ),
@@ -76,7 +74,22 @@ namespace PatternSystem
             };
 
             TableCreator.PushTables(tables);
-            TableCreator.CreateTable(_dbManager);
+            MonoSQLiteManager dbManager = new MonoSQLiteManager(PATH);
+            TableCreator.CreateTable(dbManager);
+            dbManager.Close();
+        }
+
+        [MenuItem("Tools/PatterSystem/SaveCurrentPattern")]
+        static private void SaveCurrentPattern()
+        {
+            MonoSQLiteManager dbManager = new MonoSQLiteManager(PATH);
+            foreach (PatternSystem.HabitAgent ha in PatternSystem.HabitAgent.Habits)
+            {
+                if(ha.transform.parent != null)
+                    ha.Save(dbManager);
+            }
+
+            dbManager.Close();
         }
 		public Object GetEditorPrefab(EditorPrefabList key)
 		{
@@ -86,7 +99,9 @@ namespace PatternSystem
         private void LoadTable<T>()
             where T : DBBaseTable, new()
         {
-            List<T> table = _dbManager.GetTableData<T>();
+            MonoSQLiteManager dbManager = new MonoSQLiteManager(PATH);
+            List<T> table = dbManager.GetTableData<T>();
+            dbManager.Close();
             Dictionary<int, DBBaseTable> tableMap = new Dictionary<int, DBBaseTable>();
             foreach (T ar in table)
             {

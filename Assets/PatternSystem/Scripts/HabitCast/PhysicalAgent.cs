@@ -4,7 +4,7 @@ using System.Collections;
 
 namespace PatternSystem
 {
-    public class Physical : Attribute
+    public abstract class PhysicalAgent : AttributeAgent
     {
         public enum Type
         {
@@ -19,6 +19,9 @@ namespace PatternSystem
         public override void Run(GameObject target)
         {
         }
+
+        //public abstract void Save(DBAgent.MonoSQLiteManager dbManager, int parentID, string parentType, int sequence);
+
     }
 }
 

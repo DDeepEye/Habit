@@ -267,7 +267,7 @@ namespace DBAgent
 
         static public string GetQuery(MonoSQLiteManager dbManager, string originName, string toCopyTable)
         {
-            HashSet<string> notSameDataType = new HashSet<string>();
+            HashSet<string> SameDataType = new HashSet<string>();
             Dictionary<string, ColumnInfo> copyColumns = dbManager.GetDBTableColumnsInfo (toCopyTable);
             Dictionary<string, ColumnInfo> selectColumns = dbManager.GetDBTableColumnsInfo (originName);
 
@@ -275,9 +275,9 @@ namespace DBAgent
             {
                 if (selectColumns.ContainsKey (c.Key))
                 {
-                    if (selectColumns [c.Key]._dataType != c.Value._dataType) 
+                    if (selectColumns [c.Key]._dataType == c.Value._dataType) 
                     {
-                        notSameDataType.Add(c.Key);
+                        SameDataType.Add(c.Key);
                     }
                 }
                 /*
@@ -293,7 +293,7 @@ namespace DBAgent
             string insertColumnsQ = "(";
             foreach (KeyValuePair<string, ColumnInfo> column in copyColumns)
             {
-                if (!notSameDataType.Contains(column.Key))
+                if (SameDataType.Contains(column.Key))
                 {
                     if (selectColumnsQ.Length > 0)
                     {
@@ -337,6 +337,7 @@ namespace DBAgent
 
             System.Type type = table.GetType();
             FieldInfo[] members = type.GetFields(BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Instance | BindingFlags.SetField | BindingFlags.GetField);            
+            FieldInfo key = dbManager.GetPrimaryKey(members);
 
             string q = "INSERT INTO " + table.GetType().Name + " (";
             string columns_q = "";
@@ -344,6 +345,9 @@ namespace DBAgent
 
             for(int i = 0; i < members.Length; ++i)
             {
+                if (members[i] == key)
+                    continue;
+
                 if(columns_q.Length > 0)
                 {
                     columns_q += ",";
@@ -352,10 +356,15 @@ namespace DBAgent
                     
                 columns_q += members[i].Name;
                 if (members[i].FieldType == typeof(string) || members[i].FieldType == typeof(char))
-                    value_q += "`";
-                value_q += members[i].GetValue(table).ToString();
-                if (members[i].FieldType == typeof(string) || members[i].FieldType == typeof(char))
-                    value_q += "`";
+                {
+                    value_q += "'";
+                    value_q += members[i].GetValue(table);
+                    value_q += "'";
+                }
+                else
+                {
+                    value_q += members[i].GetValue(table).ToString();
+                }
             }
 
             q += columns_q + ")";
@@ -383,7 +392,7 @@ namespace DBAgent
             Dictionary<string, ColumnInfo> columns = dbManager.GetTableColumnsInfo(table.GetType());
 
             System.Type type = table.GetType();
-                        FieldInfo[] members = type.GetFields(BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Instance | BindingFlags.SetField | BindingFlags.GetField);
+            FieldInfo[] members = type.GetFields(BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Instance | BindingFlags.SetField | BindingFlags.GetField);
             FieldInfo key = dbManager.GetPrimaryKey(members);
             if (key == null)
             {

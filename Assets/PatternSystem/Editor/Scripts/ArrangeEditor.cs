@@ -7,20 +7,26 @@ using System.Collections.Generic;
 
 namespace PatternSystem
 {
-	[CustomEditor(typeof(Arrange))]
+    [CustomEditor(typeof(ArrangeAgent))]
 	public class ArrangeEditor : AttributeEditor 
 	{
-		Arrange _arrange;
+        ArrangeAgent _arrange;
 		void OnEnable () {
-			_arrange = target as Arrange;
+            _arrange = target as ArrangeAgent;
             _attribute = _arrange;
 		}
 
 		public override void OnInspectorGUI()
 		{
+            if (_arrange.transform.parent == null)
+                return;
+
+            if (_arrange.transform.parent.name != "Triger" && _arrange.transform.parent.name != "Arrange")
+                return;
+            
 			EditorGUILayout.BeginVertical ();
 			{
-				_arrange._type = (Arrange.Type) EditorGUILayout.EnumPopup ("Arrange type", _arrange._type);
+                _arrange._type = (ArrangeAgent.Type) EditorGUILayout.EnumPopup ("Arrange type", _arrange._type);
 				_arrange._repeat = EditorGUILayout.IntField ("Repeat count",_arrange._repeat);
 			}
 			EditorGUILayout.EndVertical ();

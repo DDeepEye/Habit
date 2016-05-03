@@ -26,29 +26,29 @@ namespace PatternSystem
 
     public class DBHabit : DBBaseTable
 	{
+        public string comment;
 		
 	}
 
     public class DBTriger : DBBaseTable
 	{
 		public int 		habitId;
-		public string 		tirigerName;
+		public string 		trigerName;
 	}
 
     public class DBArrange : DBBaseTable
 	{
-		public int			parentType;
+		public string		parentType;
 		public int			parentId;
 		public int			type;
 		public int			repeat;
-		public float		sequence;
+		public int		    sequence;
 	}
 
     public class DBTimer : DBBaseTable
 	{
 		public string		parentType;
 		public int			parentId;
-		public int			isRelative;
 		public float		time;
 		public int			sequence;
 	}
