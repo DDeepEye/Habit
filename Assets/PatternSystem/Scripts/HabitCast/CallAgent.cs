@@ -17,7 +17,7 @@ namespace PatternSystem
         {
         }
 
-        public override void Save(DBAgent.MonoSQLiteManager dbManager, int parentID, string parentType, int sequence)
+        public override bool Save(DBAgent.MonoSQLiteManager dbManager, int parentID, string parentType, int sequence)
         {
             DBCall call = new DBCall();
             call.callName = _sendMessage;
@@ -25,9 +25,12 @@ namespace PatternSystem
             call.parentType = parentType;
             call.sequence = sequence;
             dbManager.InsertTable<DBCall>(ref call);
-            dbManager.CommandQueries();
+            if (!dbManager.CommandQueries())
+                return false;
+
             call = dbManager.GetTableLastData<DBCall>();
             _id = call.id;
+            return true;
         }
     }
 }

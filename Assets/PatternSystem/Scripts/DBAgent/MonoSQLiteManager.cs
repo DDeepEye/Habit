@@ -557,9 +557,9 @@ namespace DBAgent
 			_queries.Enqueue(query);
 		}
 
-        public bool CommandQueries(bool isbackup = true)
+        public bool CommandQueries(bool isbackup = false)
 		{
-            string backupFileName = _filePath.Replace(_fileName, "_backup" + _fileName);
+            string backupFileName = _filePath.Replace(_fileName, DateTime.Now.ToString("yyyy_mm_dd")+ "_" + _fileName);
 			try
 			{
                 FileInfo file = new FileInfo(_filePath);
@@ -944,7 +944,7 @@ namespace DBAgent
                 CloneTable(tableName, backupTableName);
                 DropTable(tableName);                
                 CreateTable(tableName, dbColumns);
-                if (!CommandQueries(false))
+                if (!CommandQueries())
                 {   
                     return false;
                 }

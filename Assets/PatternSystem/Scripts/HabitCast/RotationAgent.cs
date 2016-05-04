@@ -14,7 +14,7 @@ namespace PatternSystem
         {
         }
 
-        public override void Save(DBAgent.MonoSQLiteManager dbManager, int parentID, string parentType, int sequence)
+        public override bool Save(DBAgent.MonoSQLiteManager dbManager, int parentID, string parentType, int sequence)
         {
             DBPhysicalData physical = new DBPhysicalData();
             physical.isRelative = (int)_type;
@@ -27,9 +27,11 @@ namespace PatternSystem
             physical.y = transform.localPosition.y;
             physical.z = transform.localPosition.z;
             dbManager.InsertTable<DBPhysicalData>(ref physical);
-            dbManager.CommandQueries();
+            if (dbManager.CommandQueries())
+                return false;
             physical = dbManager.GetTableLastData<DBPhysicalData>();
             _id = physical.id;
+            return true;
         }
     }
 }

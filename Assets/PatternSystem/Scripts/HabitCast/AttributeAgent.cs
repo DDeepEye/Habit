@@ -71,6 +71,6 @@ namespace PatternSystem
             return attributes;
 		}
         public abstract void Run(GameObject target);
-        public abstract void Save(DBAgent.MonoSQLiteManager dbManager, int parentID, string parentType, int sequence);
+        public abstract bool Save(DBAgent.MonoSQLiteManager dbManager, int parentID, string parentType, int sequence);
 	}
 }

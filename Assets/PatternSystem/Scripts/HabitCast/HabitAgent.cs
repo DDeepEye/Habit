@@ -12,7 +12,7 @@ namespace PatternSystem
         public EditorPrefabList ContainerType{get{return _containerType;}}
 
         private int _id = -1;
-        public int ID {get{return _id;}}
+        public int ID { set{ _id = value;} get{return _id;}}
         public string _comment = "comment";
         public HabitAgent()
         {
@@ -43,19 +43,22 @@ namespace PatternSystem
 			return trigers;
 		}
 
-        public void Save(DBAgent.MonoSQLiteManager dbManager)
+        public bool Save(DBAgent.MonoSQLiteManager dbManager)
         {
             DBHabit habit = new DBHabit();
             habit.comment = _comment;
             dbManager.InsertTable<DBHabit>(ref habit);
-            dbManager.CommandQueries();
+            if (!dbManager.CommandQueries())
+                return false;
             habit = dbManager.GetTableLastData<DBHabit>();
             _id = habit.id;
             List<TrigerAgent> trigers = CollectTriger();
             foreach (TrigerAgent ta in trigers)
             {
-                ta.Save(dbManager, _id);
+                if (!ta.Save(dbManager, _id))
+                    return false;
             }
+            return true;
         }
 	}
 }

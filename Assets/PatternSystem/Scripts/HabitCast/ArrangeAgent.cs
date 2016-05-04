@@ -23,7 +23,7 @@ namespace PatternSystem
         {
         }
 
-        public override void Save(DBAgent.MonoSQLiteManager dbManager, int parentID, string parentType, int sequence)
+        public override bool Save(DBAgent.MonoSQLiteManager dbManager, int parentID, string parentType, int sequence)
         {
             DBArrange arrange = new DBArrange();
             arrange.parentId = parentID;
@@ -32,14 +32,19 @@ namespace PatternSystem
             arrange.sequence = sequence;
             arrange.type = (int)_type;
             dbManager.InsertTable<DBArrange>(ref arrange);
-            dbManager.CommandQueries();
+            if (!dbManager.CommandQueries())
+                return false;
+
             arrange = dbManager.GetTableLastData<DBArrange>();
             _id = arrange.id;
             List<AttributeAgent> attributes = AttributeAgent.CollectAttribute(transform);
             for (int i = 0; i < attributes.Count; ++i)
             {
-                attributes[i].Save(dbManager, _id, "Arrange", i);
+                if (!attributes[i].Save(dbManager, _id, "Arrange", i))
+                    return false;
+
             }
+            return true;
         }
 
 	}
