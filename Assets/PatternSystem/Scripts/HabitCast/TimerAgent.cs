@@ -24,6 +24,9 @@ namespace PatternSystem
             _id = timer.id;
             return true;
         }
+        public override void Build(DBBaseTable dbData)
+        {
+        }
     }
 
 

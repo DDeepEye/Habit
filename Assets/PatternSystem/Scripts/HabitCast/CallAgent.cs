@@ -32,5 +32,12 @@ namespace PatternSystem
             _id = call.id;
             return true;
         }
+
+        public override void Build(DBBaseTable dbData)
+        {
+            DBCall dbCall = dbData as DBCall;
+            _id = dbCall.id;
+            _sendMessage = dbCall.callName;
+        }
     }
 }

@@ -5,6 +5,7 @@ namespace PatternSystem
 {
     public class RotationAgent : PhysicalAgent
     {
+        public const string DBType = "Rotation";
         public RotationAgent()
         {
             _attributeType = EditorPrefabList.ROTATION;
@@ -20,7 +21,7 @@ namespace PatternSystem
             physical.isRelative = (int)_type;
             physical.parentId = parentID;
             physical.parentType = parentType;
-            physical.physicalType = "Rotation";
+            physical.physicalType = DBType;
             physical.sequence = sequence;
             physical.time = _time;
             physical.x = transform.localPosition.x;
@@ -32,6 +33,9 @@ namespace PatternSystem
             physical = dbManager.GetTableLastData<DBPhysicalData>();
             _id = physical.id;
             return true;
+        }
+        public override void Build(DBBaseTable dbData)
+        {
         }
     }
 }

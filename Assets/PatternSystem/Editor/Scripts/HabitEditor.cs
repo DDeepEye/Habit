@@ -29,6 +29,7 @@ namespace PatternSystem
                         PatternSystem.EditorPrefabList key = PatternSystem.EditorPrefabList.TRIGER;
                         Object habit = PatternSystem.ResourcesPool.Instance.GetEditorPrefab(key);
                         GameObject triger = PrefabUtility.InstantiatePrefab(habit) as GameObject;
+                        triger.name = triger.name.Replace("(clone)", "");
                         triger.transform.SetParent(_habit.transform);
                     }
                 }

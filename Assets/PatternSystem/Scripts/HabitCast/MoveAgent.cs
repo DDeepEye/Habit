@@ -6,6 +6,7 @@ namespace PatternSystem
 {
     public class MoveAgent : PhysicalAgent
     {
+        public const string DBType = "Move";
         public MoveAgent()
         {
             _attributeType = EditorPrefabList.MOVE;
@@ -21,7 +22,7 @@ namespace PatternSystem
             physical.isRelative = (int)_type;
             physical.parentId = parentID;
             physical.parentType = parentType;
-            physical.physicalType = "Move";
+            physical.physicalType = DBType;
             physical.sequence = sequence;
             physical.time = _time;
             physical.x = transform.localPosition.x;
@@ -34,6 +35,8 @@ namespace PatternSystem
             _id = physical.id;
             return true;
         }
+
+
 	}
 
 }

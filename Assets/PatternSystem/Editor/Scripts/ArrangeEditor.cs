@@ -21,7 +21,7 @@ namespace PatternSystem
             if (_arrange.transform.parent == null)
                 return;
 
-            if (_arrange.transform.parent.name != "Triger" && _arrange.transform.parent.name != "Arrange")
+            if (_arrange.transform.parent.name != TrigerAgent.DBType && _arrange.transform.parent.name != "Arrange")
                 return;
             
 			EditorGUILayout.BeginVertical ();

@@ -36,35 +36,37 @@ namespace PatternSystem
 		public string 		trigerName;
 	}
 
-    public class DBArrange : DBBaseTable
+    public abstract class DBInterval : DBBaseTable
+    {
+        public string       parentType;
+        public int          parentId;
+    }
+
+    public class DBArrange : DBInterval
 	{
-		public string		parentType;
-		public int			parentId;
+	
 		public int			type;
 		public int			repeat;
 		public int		    sequence;
 	}
 
-    public class DBTimer : DBBaseTable
+    public class DBTimer : DBInterval
 	{
-		public string		parentType;
-		public int			parentId;
+	
 		public float		time;
 		public int			sequence;
 	}
 
-    public class DBCall : DBBaseTable
+    public class DBCall : DBInterval
 	{
-		public string		parentType;
-		public int			parentId;
+
 		public string		callName;
 		public int			sequence;
 	}
 
-    public class DBPhysicalData : DBBaseTable
+    public class DBPhysicalData : DBInterval
 	{
-		public string		parentType;
-		public int			parentId;
+
 		public string		physicalType;
 		public int			isRelative;
 		public float		x;

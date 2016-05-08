@@ -13,6 +13,17 @@ namespace PatternSystem
         private const string DBFILENAME = "PatternSystem.db";
 		private static ResourcesPool s_instance;
         private static GameObject s_patternList;
+        public static GameObject PatternList
+        {
+            get
+            {
+                s_patternList = GameObject.Find("PatternList");
+                if (s_patternList == null)
+                    s_patternList = new GameObject("PatternList");
+                
+                return s_patternList;
+            }
+        }
 		public static ResourcesPool Instance 
 		{
 			get
@@ -61,6 +72,7 @@ namespace PatternSystem
                 UnityEngine.Object o = AssetDatabase.LoadAssetAtPath(_editorPrefabPaths[i]._path, typeof(UnityEngine.Object));
 				_editorPrefabs.Add (_editorPrefabPaths [i]._key, o);
 			}
+            HabitAgent.s_editorPrefabs = _editorPrefabs;
             LoadTables();
 		}
 
@@ -116,35 +128,16 @@ namespace PatternSystem
         [MenuItem("Tools/PatterSystem/ReadPattern")]
         static private void ReadPattern()
         {
-            s_patternList = GameObject.Find("PatternList");
-            if (s_patternList == null)
-                s_patternList = new GameObject("PatternList");
+            HabitAgent.s_listManager = PatternList;
 
             Type habitType = Instance._editorPrefabPaths[(int)EditorPrefabList.HABIT]._tableDataType;
             Dictionary<int, DBBaseTable> habits = Instance._tables[habitType];
             foreach(KeyValuePair<int, DBBaseTable> habit in habits)
             {
                 DBHabit dbHabit = habit.Value as DBHabit;
-                GameObject obj = GameObject.Instantiate(Instance._editorPrefabs[EditorPrefabList.HABIT]) as GameObject;
-                obj.name = "Habit_" + dbHabit.comment;
-                obj.GetComponent<PatternSystem.HabitAgent>()._comment = dbHabit.comment;
-                obj.GetComponent<PatternSystem.HabitAgent>().ID = dbHabit.id;
-                obj.transform.SetParent(s_patternList.transform);
-
-                Type trigerType = Instance._editorPrefabPaths[(int)EditorPrefabList.TRIGER]._tableDataType;
-                Dictionary<int, DBBaseTable> trigers = Instance._tables[trigerType];
-                foreach (KeyValuePair<int, DBBaseTable> triger in trigers)
-                {
-                    DBTriger dbTriger = triger.Value as DBTriger;
-                    if (dbHabit.id == dbTriger.habitId)
-                    {
-                        GameObject trigerObj = GameObject.Instantiate(Instance._editorPrefabs[EditorPrefabList.TRIGER]) as GameObject;
-                        trigerObj.GetComponent<TrigerAgent>().TrigerName = dbTriger.trigerName;
-                        trigerObj.GetComponent<TrigerAgent>().ID = dbTriger.id;
-                        trigerObj.transform.SetParent(obj.transform);
-                    }
-                }
-
+                GameObject objHabit = GameObject.Instantiate(Instance._editorPrefabs[EditorPrefabList.HABIT]) as GameObject;
+                objHabit.GetComponent<HabitAgent>().Build(dbHabit);
+                objHabit.name = objHabit.name.Replace("(Clone)", "");
             }
         }
 
@@ -169,12 +162,13 @@ namespace PatternSystem
         }
         public void LoadTables()
         {
-            LoadTable<DBArrange>();
             LoadTable<DBHabit>();
             LoadTable<DBTriger>();
+            LoadTable<DBArrange>();
             LoadTable<DBTimer>();
             LoadTable<DBCall>();
             LoadTable<DBPhysicalData>();
+            HabitAgent.s_tables = _tables;
         }
 
         public Dictionary<int, DBBaseTable> GetTableData<T>()

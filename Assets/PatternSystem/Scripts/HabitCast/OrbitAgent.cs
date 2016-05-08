@@ -5,6 +5,7 @@ namespace PatternSystem
 {
     public class OrbitAgent : PhysicalAgent
     {
+        public const string DBType = "Orbit";
         public OrbitAgent()
         {
             _attributeType = EditorPrefabList.ORBIT;
@@ -19,7 +20,7 @@ namespace PatternSystem
             physical.isRelative = (int)_type;
             physical.parentId = parentID;
             physical.parentType = parentType;
-            physical.physicalType = "Orbit";
+            physical.physicalType = DBType;
             physical.sequence = sequence;
             physical.time = _time;
             physical.x = transform.localPosition.x;
@@ -31,6 +32,10 @@ namespace PatternSystem
             physical = dbManager.GetTableLastData<DBPhysicalData>();
             _id = physical.id;
             return true;
+        }
+
+        public override void Build(DBBaseTable dbData)
+        {
         }
     }
 }
