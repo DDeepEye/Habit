@@ -59,7 +59,6 @@
      <Compile Include="Assets\PatternSystem\Scripts\HabitCast\ScaleAgent.cs" />
      <Compile Include="Assets\PatternSystem\Scripts\HabitCast\TimerAgent.cs" />
      <Compile Include="Assets\PatternSystem\Scripts\HabitCast\TrigerAgent.cs" />
-     <Compile Include="Assets\PatternSystem\sample.cs" />
      <Compile Include="Assets\SimpleSQL\Demos\Scripts\01_SimpleQuery\SimpleQuery.cs" />
      <Compile Include="Assets\SimpleSQL\Demos\Scripts\02_ComplexQuery\ComplexQuery.cs" />
      <Compile Include="Assets\SimpleSQL\Demos\Scripts\03_Insert\InsertCommand.cs" />

@@ -51,38 +51,7 @@ namespace PatternSystem
         }
 
 
-        private readonly System.Type [] IntervalTypes = {typeof(DBArrange), typeof(DBTimer), typeof(DBCall), typeof(DBPhysicalData)};
-        private readonly Dictionary<string, EditorPrefabList> Physicals = new Dictionary<string, EditorPrefabList>()
-        {
-            {MoveAgent.DBType, EditorPrefabList.MOVE},
-            {OrbitAgent.DBType, EditorPrefabList.ORBIT},
-            {RotationAgent.DBType, EditorPrefabList.ROTATION},
-            {ScaleAgent.DBType, EditorPrefabList.SCALE},
-        };
-
-        private readonly Dictionary<string, System.Type> PhysicalComponents = new Dictionary<string, System.Type>()
-        {
-            {MoveAgent.DBType, typeof(MoveAgent)},
-            {OrbitAgent.DBType, typeof(OrbitAgent)},
-            {RotationAgent.DBType, typeof(RotationAgent)},
-            {ScaleAgent.DBType,typeof(ScaleAgent)},
-        };
-
-
-        private readonly Dictionary<System.Type, EditorPrefabList> Intervals = new Dictionary<System.Type, EditorPrefabList>()
-        {
-            {typeof(DBArrange), EditorPrefabList.ARRANGE}, 
-            {typeof(DBTimer), EditorPrefabList.TIMER}, 
-            {typeof(DBCall), EditorPrefabList.CALL}
-        };
-
-        private readonly Dictionary<System.Type, System.Type> IntervalComponents = new Dictionary<System.Type, System.Type>()
-        {
-            {typeof(DBArrange), typeof(ArrangeAgent)}, 
-            {typeof(DBTimer), typeof(TimerAgent)}, 
-            {typeof(DBCall), typeof(CallAgent)}
-        };
-
+        
         public override void Build(DBBaseTable dbData)
         {
             DBArrange dbArrange = dbData as DBArrange;
@@ -90,30 +59,30 @@ namespace PatternSystem
             _id = dbArrange.id;
             _repeat = dbArrange.repeat;
 
-            for (int i = 0; i < IntervalTypes.Length; ++i)
+            for (int i = 0; i < DataClerk.IntervalTypes.Length; ++i)
             {
-                foreach (KeyValuePair<int, DBBaseTable> it in HabitAgent.s_tables[IntervalTypes[i]])
+                foreach (KeyValuePair<int, DBBaseTable> it in DataClerk.GetTable(DataClerk.IntervalTypes[i]))
                 {
                     DBInterval dbInterval = it.Value as DBInterval;
                     if (dbInterval.parentType == DBType && dbInterval.parentId == _id)
                     {
                         AttributeAgent aa = null;
-                        if (IntervalTypes[i] == typeof(DBPhysicalData))
+                        if (DataClerk.IntervalTypes[i] == typeof(DBPhysicalData))
                         {
                             DBPhysicalData physicalData = dbInterval as DBPhysicalData;
-                            EditorPrefabList type = Physicals[physicalData.physicalType];
-                            GameObject physical = Instantiate(HabitAgent.s_editorPrefabs[type]) as GameObject;
+                            EditorPrefabList type = DataClerk.Physicals[physicalData.physicalType];
+                            GameObject physical = Instantiate(DataClerk.GetPatternPrefab(type)) as GameObject;
                             physical.transform.SetParent(transform);
                             physical.name = physical.name.Replace("(Clone)", "");
-                            aa = physical.GetComponent(PhysicalComponents[physicalData.physicalType]) as AttributeAgent;
+                            aa = physical.GetComponent(DataClerk.PhysicalComponents[physicalData.physicalType]) as AttributeAgent;
                         }
                         else
                         {
-                            EditorPrefabList type = Intervals[IntervalTypes[i]];
-                            GameObject interval = Instantiate(HabitAgent.s_editorPrefabs[type]) as GameObject;
+                            EditorPrefabList type = DataClerk.Intervals[DataClerk.IntervalTypes[i]];
+                            GameObject interval = Instantiate(DataClerk.GetPatternPrefab(type)) as GameObject;
                             interval.transform.SetParent(transform);
                             interval.name = interval.name.Replace("(Clone)", "");
-                            aa = interval.GetComponent(IntervalComponents[IntervalTypes[i]]) as AttributeAgent;
+                            aa = interval.GetComponent(DataClerk.IntervalComponents[DataClerk.IntervalTypes[i]]) as AttributeAgent;
                         }
                         aa.Build(dbInterval);
                     }

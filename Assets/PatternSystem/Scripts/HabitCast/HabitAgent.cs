@@ -8,8 +8,6 @@ namespace PatternSystem
     
 	public class HabitAgent : MonoBehaviour {
         private static List<HabitAgent> s_Habits = new List<HabitAgent>();
-        public static Dictionary<System.Type, Dictionary<int, DBBaseTable> > s_tables;
-        public static Dictionary<EditorPrefabList, UnityEngine.Object> s_editorPrefabs;
         public static GameObject s_listManager;
         public static List<HabitAgent> Habits {get{return s_Habits;}}
 
@@ -75,13 +73,13 @@ namespace PatternSystem
 
             transform.SetParent(s_listManager.transform);
 
-            Dictionary<int, DBBaseTable> trigers = s_tables[typeof(DBTriger)];
+            Dictionary<int, DBBaseTable> trigers = DataClerk.GetTable(typeof(DBTriger));
             foreach (KeyValuePair<int, DBBaseTable> triger in trigers)
             {
                 DBTriger dbTriger = triger.Value as DBTriger;
                 if (dbHabit.id == dbTriger.habitId)
                 {
-                    GameObject trigerObj = GameObject.Instantiate(s_editorPrefabs[EditorPrefabList.TRIGER]) as GameObject;
+                        GameObject trigerObj = GameObject.Instantiate(DataClerk.GetPatternPrefab(EditorPrefabList.TRIGER)) as GameObject;
                     trigerObj.name = trigerObj.name.Replace("(Clone)", "");
                     trigerObj.transform.SetParent(transform);
                     trigerObj.GetComponent<TrigerAgent>().Build(dbTriger);

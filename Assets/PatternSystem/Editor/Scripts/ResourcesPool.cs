@@ -72,7 +72,7 @@ namespace PatternSystem
                 UnityEngine.Object o = AssetDatabase.LoadAssetAtPath(_editorPrefabPaths[i]._path, typeof(UnityEngine.Object));
 				_editorPrefabs.Add (_editorPrefabPaths [i]._key, o);
 			}
-            HabitAgent.s_editorPrefabs = _editorPrefabs;
+            DataClerk.s_editorPrefabs = _editorPrefabs;
             LoadTables();
 		}
 
@@ -168,7 +168,7 @@ namespace PatternSystem
             LoadTable<DBTimer>();
             LoadTable<DBCall>();
             LoadTable<DBPhysicalData>();
-            HabitAgent.s_tables = _tables;
+            DataClerk.s_tables = _tables;
         }
 
         public Dictionary<int, DBBaseTable> GetTableData<T>()
