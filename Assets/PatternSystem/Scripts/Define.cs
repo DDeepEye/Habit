@@ -67,7 +67,6 @@ namespace PatternSystem
 
     public class DBPhysicalData : DBInterval
 	{
-
 		public string		physicalType;
 		public int			isRelative;
 		public float		x;

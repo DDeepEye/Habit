@@ -14,7 +14,7 @@ namespace PatternSystem
         private EditorPrefabList _containerType;
         public EditorPrefabList ContainerType{get{return _containerType;}}
 
-
+        public string _activeTriger = "";
 
         private int _id = -1;
         public int ID { set{ _id = value;} get{return _id;}}
@@ -31,6 +31,10 @@ namespace PatternSystem
             Debug.Log("Remove HabitAgent current count " + s_Habits.Count);
         }
 
+        void Start()
+        {
+            gameObject.hideFlags = HideFlags.HideInHierarchy;
+        }
 
         public List<TrigerAgent> CollectTriger()
 		{
@@ -85,7 +89,6 @@ namespace PatternSystem
                     trigerObj.GetComponent<TrigerAgent>().Build(dbTriger);
                 }
             }
-
         }
 	}
 }
