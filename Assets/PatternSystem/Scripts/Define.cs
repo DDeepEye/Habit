@@ -5,7 +5,7 @@ using DBAgent;
 
 namespace PatternSystem
 {
-	public enum EditorPrefabList
+	public enum ePatternList
 	{
 		HABIT,
 		TRIGER,
@@ -80,25 +80,25 @@ namespace PatternSystem
     {
         private DataClerk(){}
         public static Dictionary<System.Type, Dictionary<int, DBBaseTable> > s_tables;
-        public static Dictionary<EditorPrefabList, UnityEngine.Object> s_editorPrefabs;
+        public static Dictionary<ePatternList, UnityEngine.Object> s_editorPrefabs;
 
         public static Dictionary<int, DBBaseTable> GetTable(System.Type type)
         {
             return s_tables[type];
         }
-        public static UnityEngine.Object GetPatternPrefab(EditorPrefabList kind)
+        public static UnityEngine.Object GetPatternPrefab(ePatternList kind)
         {
             return s_editorPrefabs[kind];
         }
 
 
         public static readonly System.Type [] IntervalTypes = {typeof(DBArrange), typeof(DBTimer), typeof(DBCall), typeof(DBPhysicalData)};
-        public static readonly Dictionary<string, EditorPrefabList> Physicals = new Dictionary<string, EditorPrefabList>()
+        public static readonly Dictionary<string, ePatternList> Physicals = new Dictionary<string, ePatternList>()
         {
-            {MoveAgent.DBType, EditorPrefabList.MOVE},
-            {OrbitAgent.DBType, EditorPrefabList.ORBIT},
-            {RotationAgent.DBType, EditorPrefabList.ROTATION},
-            {ScaleAgent.DBType, EditorPrefabList.SCALE},
+            {MoveAgent.DBType, ePatternList.MOVE},
+            {OrbitAgent.DBType, ePatternList.ORBIT},
+            {RotationAgent.DBType, ePatternList.ROTATION},
+            {ScaleAgent.DBType, ePatternList.SCALE},
         };
 
         public static readonly Dictionary<string, System.Type> PhysicalComponents = new Dictionary<string, System.Type>()
@@ -110,11 +110,11 @@ namespace PatternSystem
         };
 
 
-        public static readonly Dictionary<System.Type, EditorPrefabList> Intervals = new Dictionary<System.Type, EditorPrefabList>()
+        public static readonly Dictionary<System.Type, ePatternList> Intervals = new Dictionary<System.Type, ePatternList>()
         {
-            {typeof(DBArrange), EditorPrefabList.ARRANGE}, 
-            {typeof(DBTimer), EditorPrefabList.TIMER}, 
-            {typeof(DBCall), EditorPrefabList.CALL}
+            {typeof(DBArrange), ePatternList.ARRANGE}, 
+            {typeof(DBTimer), ePatternList.TIMER}, 
+            {typeof(DBCall), ePatternList.CALL}
         };
 
         public static readonly Dictionary<System.Type, System.Type> IntervalComponents = new Dictionary<System.Type, System.Type>()

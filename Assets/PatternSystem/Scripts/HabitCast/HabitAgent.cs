@@ -11,8 +11,8 @@ namespace PatternSystem
         public static GameObject s_listManager;
         public static List<HabitAgent> Habits {get{return s_Habits;}}
 
-        private EditorPrefabList _containerType;
-        public EditorPrefabList ContainerType{get{return _containerType;}}
+        private ePatternList _containerType;
+        public ePatternList ContainerType { get { return _containerType; } }
 
         public string _activeTriger = "";
 
@@ -22,7 +22,7 @@ namespace PatternSystem
         public HabitAgent()
         {
             s_Habits.Add(this);
-            _containerType = EditorPrefabList.HABIT;
+            _containerType = ePatternList.HABIT;
             Debug.Log("new HabitAgent current count " + s_Habits.Count);
         }
         ~HabitAgent()
@@ -83,7 +83,7 @@ namespace PatternSystem
                 DBTriger dbTriger = triger.Value as DBTriger;
                 if (dbHabit.id == dbTriger.habitId)
                 {
-                        GameObject trigerObj = GameObject.Instantiate(DataClerk.GetPatternPrefab(EditorPrefabList.TRIGER)) as GameObject;
+                    GameObject trigerObj = GameObject.Instantiate(DataClerk.GetPatternPrefab(ePatternList.TRIGER)) as GameObject;
                     trigerObj.name = trigerObj.name.Replace("(Clone)", "");
                     trigerObj.transform.SetParent(transform);
                     trigerObj.GetComponent<TrigerAgent>().Build(dbTriger);

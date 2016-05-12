@@ -9,7 +9,7 @@ namespace PatternSystem
         public const string DBType = "Move";
         public MoveAgent()
         {
-            _attributeType = EditorPrefabList.MOVE;
+            _attributeType = ePatternList.MOVE;
         }
 
         public override void Run(GameObject target)

@@ -5,12 +5,12 @@ namespace PatternSystem
 {
     public class CallAgent : AttributeAgent
     {
-        protected EditorPrefabList _attributeType;
-        public EditorPrefabList AttributeType { get { return _attributeType; } }
+        protected ePatternList _attributeType;
+        public ePatternList AttributeType { get { return _attributeType; } }
         public string _sendMessage = "";
         public CallAgent()
         {
-            _attributeType = EditorPrefabList.CALL;
+            _attributeType = ePatternList.CALL;
         }
 
         public override void Run(GameObject target)

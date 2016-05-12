@@ -694,11 +694,26 @@ namespace DBAgent
         public void CreateTable(System.Type table, bool isBackup = true)
         {
             PushQuery(new DBAgent.CreateTable(this, table, isBackup));
-        }
+        }        
 
 		public void CreateTable(string tableName, Dictionary<string, ColumnInfo> columns, bool isBackup = true)
         {
 			PushQuery(new DBAgent.CreateTable(this, tableName, columns, isBackup));
+        }
+
+        public bool DQCreateTable(System.Type table)
+        {
+            try
+            {
+                ExecuteNonQuery(DBAgent.CreateTable.GetQuery(this, table));
+            }
+            catch (Exception e)
+            {
+                Debug.Log(e);
+                return false;
+            }
+
+            return true;
         }
 
 		public void DeleteTable(string tableName)
@@ -706,24 +721,95 @@ namespace DBAgent
             PushQuery(new DBAgent.DeleteTable(this, tableName));
 		}
 
+        public bool DQDeleteTable(string tableName)
+        {
+            try
+            {
+                ExecuteNonQuery(DBAgent.DeleteTable.GetQuery(this, tableName));
+            }
+            catch(Exception e)
+            {
+                Debug.Log(e);
+                return false;
+            }
+            
+            return true;
+        }
+
 		public void DropTable(string tableName)
 		{
             PushQuery(new DBAgent.DropTable(this, tableName));
 		}
+
+        public bool DQDropTable(string tableName)
+        {
+            try
+            {
+                ExecuteNonQuery(DBAgent.DropTable.GetQuery(this, tableName));
+            }
+            catch(Exception e)
+            {
+                Debug.Log(e);
+                return false;
+            }
+            return true;
+        }
 
 		public void AddColumn(string tableName, string columnName, System.Type type)
 		{
             PushQuery(new DBAgent.AddColumn(this, tableName, columnName, type));
 		}
 
+        public bool DQAddColumn(string tableName, string columnName, System.Type type)
+        {
+            try
+            {
+                ExecuteNonQuery(DBAgent.AddColumn.GetQuery(this, tableName, columnName, type));
+            }
+            catch(Exception e)
+            {
+                Debug.Log(e);
+                return false;
+            }
+            return true;
+        }
+
         public void InsertTable<T>(ref T table)
         {
             PushQuery(new DBAgent.InsertTable<T>(this, ref table));
         }
 
+        public bool DQInsertTable<T>(ref T table)
+        {
+            try
+            {
+                ExecuteNonQuery(DBAgent.InsertTable<T>.GetQuery(this,ref table));
+            }
+            catch(Exception e)
+            {
+                Debug.Log(e);
+                return false;
+            }
+            return true;
+        }
+
         public void UpdateTable<T>(ref T table)
         {
             PushQuery(new DBAgent.UpdateTable<T>(this, ref table));
+        }
+
+        public bool DQUpdateTable<T>(ref T table)
+        {
+            try
+            {
+                ExecuteNonQuery(DBAgent.UpdateTable<T>.GetQuery(this, ref table));
+            }
+            catch (Exception e)
+            {
+                Debug.Log(e);
+                return false;
+            }
+            return true;
         }
 
         public T GetTableLastData<T>() where T : class, new()
@@ -925,7 +1011,6 @@ namespace DBAgent
                 {
                     return field;
                 }
-                
             }
             return null;
         }

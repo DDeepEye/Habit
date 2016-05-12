@@ -11,7 +11,7 @@ namespace PatternSystem
 
         public ArrangeAgent()
         {
-            _attributeType = EditorPrefabList.ARRANGE;
+            _attributeType = ePatternList.ARRANGE;
         }
 		public enum Type
 		{
@@ -70,7 +70,7 @@ namespace PatternSystem
                         if (DataClerk.IntervalTypes[i] == typeof(DBPhysicalData))
                         {
                             DBPhysicalData physicalData = dbInterval as DBPhysicalData;
-                            EditorPrefabList type = DataClerk.Physicals[physicalData.physicalType];
+                            ePatternList type = DataClerk.Physicals[physicalData.physicalType];
                             GameObject physical = Instantiate(DataClerk.GetPatternPrefab(type)) as GameObject;
                             physical.transform.SetParent(transform);
                             physical.name = physical.name.Replace("(Clone)", "");
@@ -78,7 +78,7 @@ namespace PatternSystem
                         }
                         else
                         {
-                            EditorPrefabList type = DataClerk.Intervals[DataClerk.IntervalTypes[i]];
+                            ePatternList type = DataClerk.Intervals[DataClerk.IntervalTypes[i]];
                             GameObject interval = Instantiate(DataClerk.GetPatternPrefab(type)) as GameObject;
                             interval.transform.SetParent(transform);
                             interval.name = interval.name.Replace("(Clone)", "");

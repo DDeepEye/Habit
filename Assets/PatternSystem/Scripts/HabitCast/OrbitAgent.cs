@@ -8,7 +8,7 @@ namespace PatternSystem
         public const string DBType = "Orbit";
         public OrbitAgent()
         {
-            _attributeType = EditorPrefabList.ORBIT;
+            _attributeType = ePatternList.ORBIT;
         }
 
         public override void Run(GameObject target)

@@ -26,8 +26,8 @@ namespace PatternSystem
                     _habit._comment = EditorGUILayout.TextField("Habit Comment", _habit._comment);
                     if (GUILayout.Button("Add Triger"))
                     {
-                        PatternSystem.EditorPrefabList key = PatternSystem.EditorPrefabList.TRIGER;
-                        Object habit = PatternSystem.ResourcesPool.Instance.GetEditorPrefab(key);
+                        PatternSystem.ePatternList key = PatternSystem.ePatternList.TRIGER;
+                        Object habit = PatternSystem.EditorResourcesPool.Instance.GetEditorPrefab(key);
                         GameObject triger = PrefabUtility.InstantiatePrefab(habit) as GameObject;
                         triger.name = triger.name.Replace("(clone)", "");
                         triger.transform.SetParent(_habit.transform);

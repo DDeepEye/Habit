@@ -9,7 +9,7 @@ namespace PatternSystem
         public const string DBType = "Scale";
         public ScaleAgent()
         {
-            _attributeType = EditorPrefabList.SCALE;
+            _attributeType = ePatternList.SCALE;
         }
 
         public override void Run(GameObject target)

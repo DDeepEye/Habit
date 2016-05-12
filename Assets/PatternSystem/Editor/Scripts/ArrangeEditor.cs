@@ -33,14 +33,14 @@ namespace PatternSystem
 
 			EditorGUILayout.BeginVertical ();
 			{
-				for(int i = (int)(EditorPrefabList.ARRANGE); i < (int)(EditorPrefabList.MAX); ++i)
+				for(int i = (int)(ePatternList.ARRANGE); i < (int)(ePatternList.MAX); ++i)
 				{
 					string btnlabel = "Add --> ";
-					btnlabel += ((EditorPrefabList)i).ToString ();
+					btnlabel += ((ePatternList)i).ToString ();
 					if(GUILayout.Button(btnlabel))
 					{
-						EditorPrefabList key = (EditorPrefabList)i;
-						Object attribute = ResourcesPool.Instance.GetEditorPrefab (key);
+						ePatternList key = (ePatternList)i;
+						Object attribute = EditorResourcesPool.Instance.GetEditorPrefab (key);
 						GameObject triger = PrefabUtility.InstantiatePrefab(attribute) as GameObject;
                         triger.transform.SetParent(_arrange.transform);
 					}

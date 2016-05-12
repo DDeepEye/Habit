@@ -6,8 +6,8 @@ namespace PatternSystem
 {
     abstract public class AttributeAgent : MonoBehaviour {
 
-        protected EditorPrefabList _attributeType;
-        public EditorPrefabList AttributeType { get { return _attributeType; } }
+        protected ePatternList _attributeType;
+        public ePatternList AttributeType { get { return _attributeType; } }
 
 
         protected int _id = -1;

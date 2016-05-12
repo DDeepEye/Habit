@@ -6,8 +6,8 @@ namespace PatternSystem
 {
     public class TrigerAgent : MonoBehaviour {
 
-        private EditorPrefabList _containerType;
-        public EditorPrefabList ContainerType { get { return _containerType; } }
+        private ePatternList _containerType;
+        public ePatternList ContainerType { get { return _containerType; } }
 
 
         public const string DBType = "Triger";
@@ -21,7 +21,7 @@ namespace PatternSystem
 
         public TrigerAgent()
         {
-            _containerType = EditorPrefabList.TRIGER;
+            _containerType = ePatternList.TRIGER;
         }
 
 
@@ -70,7 +70,7 @@ namespace PatternSystem
                         if (DataClerk.IntervalTypes[i] == typeof(DBPhysicalData))
                         {
                             DBPhysicalData physicalData = dbInterval as DBPhysicalData;
-                            EditorPrefabList type = DataClerk.Physicals[physicalData.physicalType];
+                            ePatternList type = DataClerk.Physicals[physicalData.physicalType];
                             GameObject physical = Instantiate(DataClerk.GetPatternPrefab(type)) as GameObject;
                             physical.name = physical.name.Replace("(Clone)", "");
                             physical.transform.SetParent(transform);
@@ -78,7 +78,7 @@ namespace PatternSystem
                         }
                         else
                         {
-                            EditorPrefabList type = DataClerk.Intervals[DataClerk.IntervalTypes[i]];
+                            ePatternList type = DataClerk.Intervals[DataClerk.IntervalTypes[i]];
                             GameObject interval = Instantiate(DataClerk.GetPatternPrefab(type)) as GameObject;
                             interval.transform.SetParent(transform);
                             interval.name = interval.name.Replace("(Clone)", "");

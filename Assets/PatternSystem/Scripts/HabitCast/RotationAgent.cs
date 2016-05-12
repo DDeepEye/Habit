@@ -8,7 +8,7 @@ namespace PatternSystem
         public const string DBType = "Rotation";
         public RotationAgent()
         {
-            _attributeType = EditorPrefabList.ROTATION;
+            _attributeType = ePatternList.ROTATION;
         }
 
         public override void Run(GameObject target)

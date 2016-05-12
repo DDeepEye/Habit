@@ -7,11 +7,9 @@ using System.Collections.Generic;
 using DBAgent;
 
 namespace PatternSystem
-{	public class ResourcesPool
-	{
-        private const string PATH = "/PatternSystem/Resources/DB/";
-        private const string DBFILENAME = "PatternSystem.db";
-		private static ResourcesPool s_instance;
+{	public class EditorResourcesPool : ResourcesPool
+	{        
+		private static EditorResourcesPool s_instance;
         private static GameObject s_patternList;
         public static GameObject PatternList
         {
@@ -24,13 +22,13 @@ namespace PatternSystem
                 return s_patternList;
             }
         }
-		public static ResourcesPool Instance 
+		public static EditorResourcesPool Instance 
 		{
 			get
 			{
 				if (s_instance == null) 
 				{
-					s_instance = new ResourcesPool ();
+					s_instance = new EditorResourcesPool ();
 					s_instance.Init ();
 				}
 				return s_instance;
@@ -39,31 +37,30 @@ namespace PatternSystem
 
 		public struct EditorPrefabInfo
 		{
-			public EditorPrefabInfo(EditorPrefabList key, string path, System.Type tableDataType)
+			public EditorPrefabInfo(ePatternList key, string path, System.Type tableDataType)
 			{
 				_key = key;
                 _path = path;
 				_tableDataType = tableDataType;
 			}
-			public EditorPrefabList 	_key;
+			public ePatternList 	_key;
 			public string			    _path;
 			public System.Type			_tableDataType;
 		}
 
 		EditorPrefabInfo [] _editorPrefabPaths = new EditorPrefabInfo[]{
-			new EditorPrefabInfo(EditorPrefabList.HABIT, "Assets/PatternSystem/Editor/EditorPrefabs/Habit.prefab", typeof(DBHabit)),
-            new EditorPrefabInfo(EditorPrefabList.TRIGER, "Assets/PatternSystem/Editor/EditorPrefabs/Triger.prefab", typeof(DBTriger)),
-            new EditorPrefabInfo(EditorPrefabList.ARRANGE, "Assets/PatternSystem/Editor/EditorPrefabs/Arrange.prefab", typeof(DBArrange)),
-            new EditorPrefabInfo(EditorPrefabList.MOVE, "Assets/PatternSystem/Editor/EditorPrefabs/Move.prefab", typeof(DBPhysicalData)),
-            new EditorPrefabInfo(EditorPrefabList.SCALE, "Assets/PatternSystem/Editor/EditorPrefabs/Scale.prefab", typeof(DBPhysicalData)),
-            new EditorPrefabInfo(EditorPrefabList.ROTATION, "Assets/PatternSystem/Editor/EditorPrefabs/Rotation.prefab", typeof(DBPhysicalData)),
-            new EditorPrefabInfo(EditorPrefabList.ORBIT, "Assets/PatternSystem/Editor/EditorPrefabs/Orbit.prefab", typeof(DBPhysicalData)),
-            new EditorPrefabInfo(EditorPrefabList.TIMER, "Assets/PatternSystem/Editor/EditorPrefabs/Timer.prefab", typeof(DBTimer)),
-            new EditorPrefabInfo(EditorPrefabList.CALL, "Assets/PatternSystem/Editor/EditorPrefabs/Call.prefab", typeof(DBCall)),
+			new EditorPrefabInfo(
+                ePatternList.HABIT, "Assets/PatternSystem/Editor/EditorPrefabs/Habit.prefab", typeof(DBHabit)),
+            new EditorPrefabInfo(ePatternList.TRIGER, "Assets/PatternSystem/Editor/EditorPrefabs/Triger.prefab", typeof(DBTriger)),
+            new EditorPrefabInfo(ePatternList.ARRANGE, "Assets/PatternSystem/Editor/EditorPrefabs/Arrange.prefab", typeof(DBArrange)),
+            new EditorPrefabInfo(ePatternList.MOVE, "Assets/PatternSystem/Editor/EditorPrefabs/Move.prefab", typeof(DBPhysicalData)),
+            new EditorPrefabInfo(ePatternList.SCALE, "Assets/PatternSystem/Editor/EditorPrefabs/Scale.prefab", typeof(DBPhysicalData)),
+            new EditorPrefabInfo(ePatternList.ROTATION, "Assets/PatternSystem/Editor/EditorPrefabs/Rotation.prefab", typeof(DBPhysicalData)),
+            new EditorPrefabInfo(ePatternList.ORBIT, "Assets/PatternSystem/Editor/EditorPrefabs/Orbit.prefab", typeof(DBPhysicalData)),
+            new EditorPrefabInfo(ePatternList.TIMER, "Assets/PatternSystem/Editor/EditorPrefabs/Timer.prefab", typeof(DBTimer)),
+            new EditorPrefabInfo(ePatternList.CALL, "Assets/PatternSystem/Editor/EditorPrefabs/Call.prefab", typeof(DBCall)),
 		};
-        Dictionary<EditorPrefabList,UnityEngine.Object> _editorPrefabs = new Dictionary<EditorPrefabList, UnityEngine.Object>();
-
-        Dictionary<System.Type, Dictionary<int, DBBaseTable> > _tables = new Dictionary<System.Type, Dictionary<int, DBBaseTable> >();
+        Dictionary<ePatternList,UnityEngine.Object> _editorPrefabs = new Dictionary<ePatternList, UnityEngine.Object>();        
 
 		void Init()
 		{
@@ -130,59 +127,22 @@ namespace PatternSystem
         {
             HabitAgent.s_listManager = PatternList;
 
-            Type habitType = Instance._editorPrefabPaths[(int)EditorPrefabList.HABIT]._tableDataType;
+            Type habitType = Instance._editorPrefabPaths[(int)ePatternList.HABIT]._tableDataType;
             Dictionary<int, DBBaseTable> habits = Instance._tables[habitType];
             foreach(KeyValuePair<int, DBBaseTable> habit in habits)
             {
                 DBHabit dbHabit = habit.Value as DBHabit;
-                GameObject objHabit = GameObject.Instantiate(Instance._editorPrefabs[EditorPrefabList.HABIT]) as GameObject;
+                GameObject objHabit = GameObject.Instantiate(Instance._editorPrefabs[ePatternList.HABIT]) as GameObject;
                 objHabit.GetComponent<HabitAgent>().Build(dbHabit);
                 objHabit.name = objHabit.name.Replace("(Clone)", "");
             }
         }
 
 
-        public UnityEngine.Object GetEditorPrefab(EditorPrefabList key)
+        public UnityEngine.Object GetEditorPrefab(ePatternList key)
 		{
 			return _editorPrefabs [key];
-		}
-
-        private void LoadTable<T>()
-            where T : DBBaseTable, new()
-        {
-            MonoSQLiteManager dbManager = new MonoSQLiteManager(PATH + DBFILENAME);
-            List<T> table = dbManager.GetTableData<T>();
-            dbManager.Close();
-            Dictionary<int, DBBaseTable> tableMap = new Dictionary<int, DBBaseTable>();
-            foreach (T ar in table)
-            {
-                tableMap.Add(ar.id, ar);
-            }
-            _tables.Add(typeof(T),tableMap);
-        }
-        public void LoadTables()
-        {
-            LoadTable<DBHabit>();
-            LoadTable<DBTriger>();
-            LoadTable<DBArrange>();
-            LoadTable<DBTimer>();
-            LoadTable<DBCall>();
-            LoadTable<DBPhysicalData>();
-            DataClerk.s_tables = _tables;
-        }
-
-        public Dictionary<int, DBBaseTable> GetTableData<T>()
-            where T : DBBaseTable
-        {
-            return _tables[typeof(T)];
-        }
-
-        public T GetTableRow<T>(int id)
-            where T : DBBaseTable, new()
-        {
-            Dictionary<int, DBBaseTable> table = GetTableData<T>();
-            return table[id] as T;
-        }
+		}        
 	}
 }
 
