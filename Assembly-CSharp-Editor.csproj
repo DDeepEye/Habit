@@ -47,8 +47,8 @@
   <ItemGroup>
      <Compile Include="Assets\PatternSystem\Editor\Scripts\ArrangeEditor.cs" />
      <Compile Include="Assets\PatternSystem\Editor\Scripts\AttributeEditor.cs" />
+     <Compile Include="Assets\PatternSystem\Editor\Scripts\EditorResourcesPool.cs" />
      <Compile Include="Assets\PatternSystem\Editor\Scripts\HabitEditor.cs" />
-     <Compile Include="Assets\PatternSystem\Editor\Scripts\ResourcesPool.cs" />
      <Compile Include="Assets\PatternSystem\Editor\Scripts\TableCreator.cs" />
      <Compile Include="Assets\PatternSystem\Editor\Scripts\TrigerEditor.cs" />
      <None Include="Assets\SimpleSQL\readme.txt" />

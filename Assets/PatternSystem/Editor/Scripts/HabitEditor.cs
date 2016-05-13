@@ -11,6 +11,8 @@ namespace PatternSystem
 
         HabitAgent _habit;
 
+        int _trigerSelected = 0;
+
 
 		void OnEnable () {
 
@@ -18,7 +20,7 @@ namespace PatternSystem
 		}
 
 		public override void OnInspectorGUI()
-		{
+		{   
 			EditorGUILayout.BeginVertical ();
 			{
                 if (_habit.transform.parent != null)
@@ -32,6 +34,34 @@ namespace PatternSystem
                         triger.name = triger.name.Replace("(clone)", "");
                         triger.transform.SetParent(_habit.transform);
                     }
+                    List<TrigerAgent> trigers = _habit.CollectTriger();
+                    if(trigers.Count > 0)
+                    {
+                        List<string> trigerNames = new List<string>();
+                        HashSet<string> overlap = new HashSet<string>();
+                        foreach(TrigerAgent triger in trigers)
+                        {
+                            trigerNames.Add(triger.TrigerName);
+                            if (overlap.Contains(triger.TrigerName))
+                                Debug.Log("Overlap Triger Name !! -> " + triger.TrigerName);
+                            else
+                                overlap.Add(triger.TrigerName);
+                            
+                        }                       
+
+                        EditorGUILayout.BeginHorizontal();
+                        _trigerSelected = EditorGUILayout.Popup("Choice Active Triger", _trigerSelected, trigerNames.ToArray());
+                        EditorGUILayout.EndHorizontal();
+                        _habit._activeTriger = trigerNames[_trigerSelected];
+                    }
+                    else
+                    {
+                        GUILayout.TextArea("Add Triger");
+                    }
+                    
+                    ///_trigerSelected = GUILayout.SelectionGrid(_trigerSelected,)
+
+                    
                 }
                 else
                 {
