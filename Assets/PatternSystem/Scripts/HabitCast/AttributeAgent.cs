@@ -9,6 +9,16 @@ namespace PatternSystem
         protected ePatternList _attributeType;
         public ePatternList AttributeType { get { return _attributeType; } }
 
+        protected static System.Type[] s_attributeTypes = {
+                                                               typeof(ArrangeAgent),
+                                                               typeof(CallAgent),
+                                                               typeof(TimerAgent),
+                                                               typeof(MoveAgent),
+                                                               typeof(RotationAgent),
+                                                               typeof(OrbitAgent),
+                                                               typeof(ScaleAgent),
+                                                           };
+
 
         protected int _id = -1;
 
@@ -18,54 +28,15 @@ namespace PatternSystem
             int cnt = target.childCount;
 			for (int i = 0; i < cnt; ++i)
 			{
-                Transform t = target.GetChild (i);
-                AttributeAgent attribute = t.GetComponent<ArrangeAgent> ();
-                if (attribute != null)
-				{
-                    attributes.Add (attribute);
-                    continue;
-				}
-
-                attribute = t.GetComponent<MoveAgent> ();
-                if (attribute != null)
+                Transform t = target.GetChild(i);
+                for(int j = 0; j < s_attributeTypes.Length; ++j)
                 {
-                    attributes.Add (attribute);
-                    continue;
-                }
-
-                attribute = t.GetComponent<ScaleAgent> ();
-                if (attribute != null)
-                {
-                    attributes.Add (attribute);
-                    continue;
-                }
-
-                attribute = t.GetComponent<TimerAgent> ();
-                if (attribute != null)
-                {
-                    attributes.Add (attribute);
-                    continue;
-                }
-
-                attribute = t.GetComponent<CallAgent> ();
-                if (attribute != null)
-                {
-                    attributes.Add (attribute);
-                    continue;
-                }
-
-                attribute = t.GetComponent<OrbitAgent> ();
-                if (attribute != null)
-                {
-                    attributes.Add (attribute);
-                    continue;
-                }
-
-                attribute = t.GetComponent<RotationAgent> ();
-                if (attribute != null)
-                {
-                    attributes.Add (attribute);
-                    continue;
+                    AttributeAgent attribute = t.GetComponent(s_attributeTypes[j]) as AttributeAgent;
+                    if (attribute != null)
+                    {
+                        attributes.Add(attribute);
+                        break;
+                    }
                 }
 			}
             return attributes;

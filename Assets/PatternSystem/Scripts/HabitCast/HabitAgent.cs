@@ -4,8 +4,7 @@ using System.Collections.Generic;
 
 
 namespace PatternSystem
-{
-    
+{   
 	public class HabitAgent : MonoBehaviour {
         private static List<HabitAgent> s_Habits = new List<HabitAgent>();
         public static GameObject s_listManager;

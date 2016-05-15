@@ -9,7 +9,7 @@ namespace PatternSystem
         public enum Type
         {
             RELATIVE,
-            ABSULUTE,
+            ABSOLUTE,
         }
 
         public Vector3 _value = new Vector3();
@@ -22,7 +22,7 @@ namespace PatternSystem
         {
             DBPhysicalData dbPhysic= dbData as DBPhysicalData;
             _id = dbPhysic.id;
-            _type = dbPhysic.isRelative == 0 ? Type.RELATIVE : Type.ABSULUTE; 
+            _type = dbPhysic.isRelative == 0 ? Type.RELATIVE : Type.ABSOLUTE; 
             _time = dbPhysic.time;
             _sequence = dbPhysic.sequence;
             _value.x = dbPhysic.x;
