@@ -85,6 +85,7 @@
     <Compile Include="Assets\PatternSystem\Scripts\DBAgent\PropertyAttribute.cs" />
     <Compile Include="Assets\PatternSystem\Scripts\DBAgent\ResourcesPool.cs" />
     <Compile Include="Assets\PatternSystem\Scripts\Define.cs" />
+    <Compile Include="Assets\PatternSystem\Scripts\Habit.cs" />
     <Compile Include="Assets\PatternSystem\Scripts\HabitCast\ArrangeAgent.cs" />
     <Compile Include="Assets\PatternSystem\Scripts\HabitCast\AttributeAgent.cs" />
     <Compile Include="Assets\PatternSystem\Scripts\HabitCast\CallAgent.cs" />

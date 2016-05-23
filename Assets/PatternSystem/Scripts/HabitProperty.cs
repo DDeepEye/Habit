@@ -4,6 +4,33 @@ using System.Collections.Generic;
 
 namespace PatternSystem
 {
+    public class Triger
+    {
+        string _key;
+        public string Key { get { return _key; } }
+        protected List<Property> _conditions = new List<Property>();
+        public List<Property> Conditions { get { return _conditions; } }
+
+        public Triger(string key, GameObject target)
+        {
+            key = _key;
+        }
+
+        public Triger(string key, GameObject target, Property p)
+        {
+            key = _key;
+            _conditions.Add(p);
+        }
+
+        public void Run()
+        {
+            foreach(Property p in Conditions)
+            {
+                p.Run();
+            }
+        }
+    }
+
     public abstract class Property
     {
         protected bool _isDone = false;
