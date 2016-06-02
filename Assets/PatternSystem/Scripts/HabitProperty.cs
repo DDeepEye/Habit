@@ -11,9 +11,10 @@ namespace PatternSystem
         protected List<Property> _conditions = new List<Property>();
         public List<Property> Conditions { get { return _conditions; } }
 
-        public Triger(string key, GameObject target)
+		public Triger(string key, GameObject target, List<Property> conditions)
         {
             key = _key;
+			_conditions = conditions;
         }
 
         public Triger(string key, GameObject target, Property p)
@@ -33,6 +34,7 @@ namespace PatternSystem
 
     public abstract class Property
     {
+		protected GameObject _target;
         protected bool _isDone = false;
         public bool IsDone { get { return _isDone; } }
         protected Property() { }
@@ -41,6 +43,11 @@ namespace PatternSystem
         {
             _isDone = false;
         }
+
+		protected Property(GameObject target)
+		{
+			_target = target;
+		}
     }
 
     public class Arrange : Property
@@ -56,6 +63,12 @@ namespace PatternSystem
         private int _curProerty = 0;
         private int _repeatCount;
         private int _curCount = 0;
+
+		public Arrange(GameObject target, ArrangeType type, List<Property> properties):base(target)
+		{
+			_type = type;
+			_properties = properties;
+		}
 
         public override void Run()
         {
@@ -150,6 +163,10 @@ namespace PatternSystem
         public delegate void CallFunc();
         public CallFunc _callFunc;
 
+		public Caller (GameObject target) : base (target)
+		{
+		}
+
         public override void Run()
         {
             if (_isDone)
@@ -167,6 +184,11 @@ namespace PatternSystem
         float _time;
         public float Time { get { return _time; } }
         float _curTime;
+
+		public Timer(GameObject target, float time) : base(target)
+		{
+			_time = time;
+		}
         
         public override void Run()
         {
@@ -202,10 +224,20 @@ namespace PatternSystem
         protected float _time;
         public float Time { get { return _time; } }
         protected float _curTime = 0.0f;
+
+		protected Physical(GameObject target, Vector3 translatePoint, float time) : base(target)
+		{
+			_originLocalPoint = target.transform.localPosition;
+			_time = time;
+		}
     }
 
     public class Move : Physical
-    {   
+    {
+		public Move(GameObject target, Vector3 translatePoint, float time) : base(target, translatePoint, time)
+		{
+			
+		}
         public override void Run()
         {
             if (_isDone)
@@ -232,10 +264,15 @@ namespace PatternSystem
             else
                 _curTime = 0.0f;
         }
+
+
     }
 
     public class Rotation : Physical
     {
+		public Rotation(GameObject target, Vector3 translatePoint, float time) : base(target, translatePoint, time)
+		{
+		}
         public override void Run()
         {
             if (_isDone)
@@ -272,6 +309,9 @@ namespace PatternSystem
 
     public class Orbit : Physical
     {
+		public Orbit(GameObject target, Vector3 translatePoint, float time) : base(target, translatePoint, time)
+		{
+		}
         public override void Run()
         {
             if (_isDone)
@@ -309,6 +349,9 @@ namespace PatternSystem
 
     public class Scale : Physical
     {
+		public Scale(GameObject target, Vector3 translatePoint, float time) : base(target, translatePoint, time)
+		{
+		}
         public override void Run()
         {
             if (_isDone)

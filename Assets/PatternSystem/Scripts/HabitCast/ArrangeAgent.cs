@@ -13,13 +13,9 @@ namespace PatternSystem
         {
             _attributeType = ePatternList.ARRANGE;
         }
-		public enum Type
-		{
-			SERIES,
-			PARALLEL,
-		}
 
-		public Type _type = Type.SERIES;
+
+		public Arrange.ArrangeType _type = Arrange.ArrangeType.SERIES;
 		public int _repeat = 1;
 
         public override void Run(GameObject target)
@@ -55,7 +51,7 @@ namespace PatternSystem
         public override void Build(DBBaseTable dbData)
         {
             DBArrange dbArrange = dbData as DBArrange;
-            _type = dbArrange.sequence == 0 ? Type.SERIES : Type.PARALLEL;
+			_type = dbArrange.sequence == 0 ? Arrange.ArrangeType.SERIES : Arrange.ArrangeType.PARALLEL;
             _id = dbArrange.id;
             _repeat = dbArrange.repeat;
 
@@ -89,6 +85,20 @@ namespace PatternSystem
                 }
             }
         }
+
+		public override Property GetProperty(GameObject target)
+		{
+			List<Property> properties = new List<Property> ();
+			List<AttributeAgent> attributes = AttributeAgent.CollectAttribute(gameObject.transform);
+			foreach (AttributeAgent att in attributes)
+			{
+				properties.Add(att.GetProperty (target));
+			}
+
+			Arrange p = new Arrange (target, _type, properties);
+
+			return p;
+		}
 	}
 }
 

@@ -44,5 +44,6 @@ namespace PatternSystem
         public abstract void Run(GameObject target);
         public abstract bool Save(DBAgent.MonoSQLiteManager dbManager, int parentID, string parentType, int sequence);
         public abstract void Build(DBBaseTable dbData);
+		public abstract Property GetProperty(GameObject target);
 	}
 }

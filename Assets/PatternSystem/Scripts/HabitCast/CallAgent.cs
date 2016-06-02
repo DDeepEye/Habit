@@ -5,8 +5,7 @@ namespace PatternSystem
 {
     public class CallAgent : AttributeAgent
     {
-        protected ePatternList _attributeType;
-        public ePatternList AttributeType { get { return _attributeType; } }
+        
         public string _sendMessage = "";
         public CallAgent()
         {
@@ -39,5 +38,11 @@ namespace PatternSystem
             _id = dbCall.id;
             _sendMessage = dbCall.callName;
         }
+
+		public override Property GetProperty(GameObject target)
+		{
+			Caller p = new Caller (target);
+			return p;
+		}
     }
 }

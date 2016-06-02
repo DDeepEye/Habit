@@ -26,7 +26,7 @@ namespace PatternSystem
             
 			EditorGUILayout.BeginVertical ();
 			{
-                _arrange._type = (ArrangeAgent.Type) EditorGUILayout.EnumPopup ("Arrange type", _arrange._type);
+				_arrange._type = (Arrange.ArrangeType) EditorGUILayout.EnumPopup ("Arrange type", _arrange._type);
 				_arrange._repeat = EditorGUILayout.IntField ("Repeat count",_arrange._repeat);
 			}
 			EditorGUILayout.EndVertical ();

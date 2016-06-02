@@ -89,5 +89,18 @@ namespace PatternSystem
                 }
             }
         }
+
+		public Triger GetTriger(GameObject target)
+		{
+			List<AttributeAgent> attributes = CollectAttribute();
+
+			List<Property> conditions = new List<Property> ();
+			foreach (AttributeAgent att in attributes)
+			{
+				conditions.Add(att.GetProperty (target));
+			}
+
+			return new Triger (_trigerName, target, conditions);
+		}
 	}
 }

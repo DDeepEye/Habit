@@ -32,7 +32,24 @@ namespace PatternSystem
 
         void Start()
         {
+			if (transform.parent == null)
+				return;
+			
+			if (transform.parent.name != "testTarget")
+				return;
+
             gameObject.hideFlags = HideFlags.HideInHierarchy;
+			List<TrigerAgent> trigers= CollectTriger ();
+
+			GameObject testTarget = transform.parent.gameObject;
+			Habit habit = testTarget.GetComponent<Habit>();
+
+			foreach (TrigerAgent triger in trigers)
+			{
+				habit.AddTriger(triger.GetTriger(transform.parent.gameObject));
+			}
+
+			habit.Play (_activeTriger);
         }
 
         public List<TrigerAgent> CollectTriger()

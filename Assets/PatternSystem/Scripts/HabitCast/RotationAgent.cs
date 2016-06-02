@@ -37,6 +37,11 @@ namespace PatternSystem
         public override void Build(DBBaseTable dbData)
         {
         }
+
+		public override Property GetProperty(GameObject target)
+		{
+			return new Rotation(target, _value, _time);
+		}
     }
 }
 

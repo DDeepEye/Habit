@@ -36,6 +36,11 @@ namespace PatternSystem
             return true;
         }
 
+		public override Property GetProperty(GameObject target)
+		{
+			return new Move(target, _value, _time);
+		}
+
 
 	}
 
