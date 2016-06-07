@@ -34,8 +34,8 @@ namespace PatternSystem
         {
 			if (transform.parent == null)
 				return;
-			
-			if (transform.parent.name != "testTarget")
+
+			if (transform.parent.gameObject.tag != "HabitTest")
 				return;
 
             gameObject.hideFlags = HideFlags.HideInHierarchy;

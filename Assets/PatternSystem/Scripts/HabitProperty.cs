@@ -13,7 +13,7 @@ namespace PatternSystem
 
 		public Triger(string key, GameObject target, List<Property> conditions)
         {
-            key = _key;
+            _key = key;
 			_conditions = conditions;
         }
 
@@ -41,7 +41,7 @@ namespace PatternSystem
         public abstract void Run();
         public virtual void Reset(bool isPure)
         {
-            _isDone = false;
+			_isDone = false;
         }
 
 		protected Property(GameObject target)
@@ -64,10 +64,11 @@ namespace PatternSystem
         private int _repeatCount;
         private int _curCount = 0;
 
-		public Arrange(GameObject target, ArrangeType type, List<Property> properties):base(target)
+		public Arrange(GameObject target, ArrangeType type, List<Property> properties, int repeatCount):base(target)
 		{
 			_type = type;
 			_properties = properties;
+			_repeatCount = repeatCount;
 		}
 
         public override void Run()
@@ -128,7 +129,6 @@ namespace PatternSystem
                         Property p = _properties[i];
                         p.Reset(false);
                         _curProerty = 0;
-                        return;
                     }
                 }
                 else
@@ -141,6 +141,7 @@ namespace PatternSystem
                             p.Reset(true);
                             _curProerty = 0;
                         }
+						_isDone = true;
                     }
                     else
                     {
@@ -153,7 +154,6 @@ namespace PatternSystem
                         ++_curCount;
                     }
                 }
-                base.Reset(true);
             }
         }
     }
@@ -227,7 +227,9 @@ namespace PatternSystem
 
 		protected Physical(GameObject target, Vector3 translatePoint, float time) : base(target)
 		{
+			_target = target;
 			_originLocalPoint = target.transform.localPosition;
+			_translatePoint = translatePoint;
 			_time = time;
 		}
     }
@@ -240,8 +242,9 @@ namespace PatternSystem
 		}
         public override void Run()
         {
-            if (_isDone)
+			if (_isDone)
                 return;
+			
             _curTime += UnityEngine.Time.deltaTime;
 
             float tickTime = _curTime > _time ? _curTime - _time : UnityEngine.Time.deltaTime;
@@ -259,13 +262,11 @@ namespace PatternSystem
         public override void Reset(bool isPure)
         {
             base.Reset(isPure);
-            if (_curTime > _time && isPure != false)
+            if (_curTime > _time && isPure)
                 _curTime = _curTime - _time;
             else
                 _curTime = 0.0f;
         }
-
-
     }
 
     public class Rotation : Physical

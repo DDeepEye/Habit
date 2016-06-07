@@ -95,7 +95,7 @@ namespace PatternSystem
 				properties.Add(att.GetProperty (target));
 			}
 
-			Arrange p = new Arrange (target, _type, properties);
+			Arrange p = new Arrange (target, _type, properties, _repeat);
 
 			return p;
 		}

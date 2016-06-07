@@ -10,9 +10,9 @@ GameObject:
   - 4: {fileID: 498502}
   - 212: {fileID: 21271348}
   - 114: {fileID: 11458076}
-  m_Layer: 0
+  m_Layer: 8
   m_Name: TestTarget
-  m_TagString: Untagged
+  m_TagString: HabitTest
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0

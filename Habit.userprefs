@@ -1,8 +1,12 @@
 ﻿<Properties StartupItem="Assembly-CSharp.csproj">
   <MonoDevelop.Ide.Workspace ActiveConfiguration="Debug" PreferredExecutionTarget="Unity.Instance.Unity Editor" />
-  <MonoDevelop.Ide.Workbench ActiveDocument="Assets/PatternSystem/Scripts/Habit.cs">
+  <MonoDevelop.Ide.Workbench ActiveDocument="Assets/PatternSystem/Scripts/HabitProperty.cs">
     <Files>
+      <File FileName="Assets/PatternSystem/Scripts/HabitProperty.cs" Line="263" Column="10" />
       <File FileName="Assets/PatternSystem/Scripts/Habit.cs" Line="23" Column="43" />
+      <File FileName="Assets/PatternSystem/Scripts/HabitCast/MoveAgent.cs" Line="21" Column="22" />
+      <File FileName="Assets/PatternSystem/Scripts/HabitCast/ArrangeAgent.cs" Line="98" Column="63" />
+      <File FileName="Assets/PatternSystem/Scripts/HabitCast/HabitAgent.cs" Line="53" Column="1" />
     </Files>
   </MonoDevelop.Ide.Workbench>
   <MonoDevelop.Ide.DebuggingService.Breakpoints>
@@ -16,7 +20,8 @@
       <Breakpoint file="/Users/leejihoon/Desktop/Developer/Projects/GitHub/Habit/Assets/PatternSystem/Editor/Scripts/ResourcesPool.cs" line="15" column="14" />
       <Breakpoint file="/Users/leejihoon/Desktop/Developer/Projects/GitHub/Habit/Assets/PatternSystem/Scripts/DBAgent/MonoSQLiteManager.cs" line="338" column="12" />
       <Breakpoint file="/Users/leejihoon/Desktop/Developer/Projects/GitHub/Habit/Assets/PatternSystem/Scripts/DBAgent/MonoSQLiteManager.cs" line="372" column="22" />
-      <Breakpoint file="/Users/leejihoon/Desktop/Developer/Projects/GitHub/Habit/Assets/PatternSystem/Scripts/HabitCast/HabitAgent.cs" line="53" column="1" />
+      <Breakpoint file="/Users/leejihoon/Desktop/Developer/Projects/GitHub/Habit/Assets/PatternSystem/Scripts/HabitProperty.cs" line="138" column="26" />
+      <Breakpoint file="/Users/leejihoon/Desktop/Developer/Projects/GitHub/Habit/Assets/PatternSystem/Scripts/HabitProperty.cs" line="154" column="22" />
     </BreakpointStore>
   </MonoDevelop.Ide.DebuggingService.Breakpoints>
   <MonoDevelop.Ide.DebuggingService.PinnedWatches />
