@@ -215,7 +215,11 @@ namespace PatternSystem
 
     public abstract class Physical : Property
     {
-        protected GameObject _target;
+        public enum Type
+        {
+            RELATIVE,
+            ABSOLUTE,
+        }
         protected Vector3 _originLocalPoint;
         public Vector3 OriginLocalPosition { get { return _originLocalPoint; } }
 
@@ -225,18 +229,29 @@ namespace PatternSystem
         public float Time { get { return _time; } }
         protected float _curTime = 0.0f;
 
-		protected Physical(GameObject target, Vector3 translatePoint, float time) : base(target)
-		{
-			_target = target;
+        public Type _type = Type.RELATIVE;
+
+        protected bool _isBegin = true;
+
+		protected Physical(GameObject target, Vector3 translatePoint, float time, Type type) : base(target)
+		{	
 			_originLocalPoint = target.transform.localPosition;
 			_translatePoint = translatePoint;
 			_time = time;
+            _type = type;
 		}
+
+        public override void Reset(bool isPure)
+        {
+            base.Reset(isPure);
+            _isBegin = true;
+        }
     }
 
     public class Move : Physical
     {
-		public Move(GameObject target, Vector3 translatePoint, float time) : base(target, translatePoint, time)
+        public Move(GameObject target, Vector3 translatePoint, float time, Type type)
+            : base(target, translatePoint, time, type)
 		{
 			
 		}
@@ -251,6 +266,9 @@ namespace PatternSystem
 
             if (_time != 0.0f)
                 tickTime *= 1 / _time;
+
+            tickTime = (tickTime > 1.0f) ? 1.0f : tickTime;
+
             _target.transform.position += _translatePoint * tickTime;
 
             if (_curTime >= _time)
@@ -271,7 +289,8 @@ namespace PatternSystem
 
     public class Rotation : Physical
     {
-		public Rotation(GameObject target, Vector3 translatePoint, float time) : base(target, translatePoint, time)
+        public Rotation(GameObject target, Vector3 translatePoint, float time, Type type)
+            : base(target, translatePoint, time, type)
 		{
 		}
         public override void Run()
@@ -285,6 +304,8 @@ namespace PatternSystem
             
             if (_time != 0.0f)
                 tickTime *= 1 / _time;
+
+            tickTime = (tickTime > 1.0f) ? 1.0f : tickTime;
 
             Vector3 rotate = new Vector3(tickTime * _translatePoint.x
                                     , tickTime * _translatePoint.y
@@ -301,7 +322,7 @@ namespace PatternSystem
         public override void Reset(bool isPure)
         {
             base.Reset(isPure);
-            if (_curTime > _time && isPure != false)
+            if (_curTime > _time)
                 _curTime = _curTime - _time;
             else
                 _curTime = 0.0f;
@@ -310,7 +331,8 @@ namespace PatternSystem
 
     public class Orbit : Physical
     {
-		public Orbit(GameObject target, Vector3 translatePoint, float time) : base(target, translatePoint, time)
+        public Orbit(GameObject target, Vector3 translatePoint, float time, Type type)
+            : base(target, translatePoint, time, type)
 		{
 		}
         public override void Run()
@@ -324,6 +346,8 @@ namespace PatternSystem
 
             if (_time != 0.0f)
                 tickTime *= 1 / _time;
+
+            tickTime = (tickTime > 1.0f) ? 1.0f : tickTime;
 
             Quaternion localRotation = _target.transform.localRotation;
             _target.transform.RotateAround(_originLocalPoint, Vector3.right, _translatePoint.x * tickTime);
@@ -350,8 +374,10 @@ namespace PatternSystem
 
     public class Scale : Physical
     {
-		public Scale(GameObject target, Vector3 translatePoint, float time) : base(target, translatePoint, time)
-		{
+        Vector3 _scaleOff;
+        public Scale(GameObject target, Vector3 translatePoint, float time, Type type)
+            : base(target, translatePoint, time, type)
+		{   
 		}
         public override void Run()
         {
@@ -361,49 +387,51 @@ namespace PatternSystem
             if (_time == 0.0f)
                 return;
 
-            Transform t = _target.transform.Find("Char(Clone)");
-            Transform p = null;
-            if (t != null)
+            if (_isBegin)
             {
-                p = t.parent;
-                t.SetParent(null);
-            }
-
-            Vector3 _scaleOff = new Vector3();
-
-            if (_curTime == 0.0f)
-            {
+                _isBegin = false;
                 _originLocalPoint = _target.transform.localScale;
-                Vector3 resultScale = new Vector3(_originLocalPoint.x * _translatePoint.x, _originLocalPoint.y * _translatePoint.y, _originLocalPoint.z * _translatePoint.z);
+                switch(_type)
+                {
+                    case Physical.Type.RELATIVE:
+                        {
+                            _scaleOff.x = _translatePoint.x * _originLocalPoint.x;
+                            _scaleOff.y = _translatePoint.y * _originLocalPoint.y;
+                            _scaleOff.z = _translatePoint.z * _originLocalPoint.z;
 
-                if (resultScale.x < _originLocalPoint.x)
-                {
-                    _scaleOff.x = -resultScale.x;
-                    _scaleOff.y = -resultScale.y;
-                    _scaleOff.z = -resultScale.z;
-                }
-                else
-                {
-                    _scaleOff.x = resultScale.x - _originLocalPoint.x;
-                    _scaleOff.y = resultScale.y - _originLocalPoint.y;
-                    _scaleOff.z = resultScale.z - _originLocalPoint.z;
+                            _scaleOff.x = _scaleOff.x - _originLocalPoint.x;
+                            _scaleOff.y = _scaleOff.y - _originLocalPoint.y;
+                            _scaleOff.z = _scaleOff.z - _originLocalPoint.z;
+                        }
+
+                        break;
+
+                    case Physical.Type.ABSOLUTE:
+                        {
+                            _scaleOff.x = _translatePoint.x - _originLocalPoint.x;
+                            _scaleOff.y = _translatePoint.y - _originLocalPoint.y;
+                            _scaleOff.z = _translatePoint.z - _originLocalPoint.z;
+                        }
+                        break;
                 }
             }
 
             _curTime += UnityEngine.Time.deltaTime;
-            Vector3 localSale = new Vector3((_originLocalPoint.x + (_scaleOff.x * _curTime / _time))
-                                            , (_originLocalPoint.y + (_scaleOff.y * _curTime / _time))
-                                            , (_originLocalPoint.z + (_scaleOff.z * _curTime / _time)));
+            float off = _curTime / _time;
+            off = (off > 1.0f) ? 1.0f : off;
+
+            Vector3 localSale = new Vector3();
+
+            
+            localSale.x = _originLocalPoint.x + (_scaleOff.x * off);
+            localSale.y = _originLocalPoint.y + (_scaleOff.y * off);
+            localSale.z = _originLocalPoint.z + (_scaleOff.z * off);
+            
             _target.transform.localScale = localSale;
 
             if (_curTime >= _time)
             {
                 _isDone = true;
-            }
-
-            if (t != null)
-            {
-                t.SetParent(p, true);
             }
         }
 

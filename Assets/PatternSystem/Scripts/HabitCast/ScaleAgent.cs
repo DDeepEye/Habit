@@ -40,7 +40,7 @@ namespace PatternSystem
 
 		public override Property GetProperty(GameObject target)
 		{
-			return new Scale(target, _value, _time);
+			return new Scale(target, _value, _time, _type);
 		}
     }
 }

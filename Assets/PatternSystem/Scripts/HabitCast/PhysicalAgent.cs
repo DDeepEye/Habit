@@ -6,15 +6,9 @@ namespace PatternSystem
 {
     public abstract class PhysicalAgent : AttributeAgent
     {
-        public enum Type
-        {
-            RELATIVE,
-            ABSOLUTE,
-        }
-
         public Vector3 _value = new Vector3();
         public float _time = 0.0f;
-        public Type _type = Type.RELATIVE;
+        public Physical.Type _type = Physical.Type.RELATIVE;
         private int _sequence = 0;
         public int Sequence {get{ return _sequence; } set{ _sequence = value;}}
 
@@ -22,7 +16,7 @@ namespace PatternSystem
         {
             DBPhysicalData dbPhysic= dbData as DBPhysicalData;
             _id = dbPhysic.id;
-            _type = dbPhysic.isRelative == 0 ? Type.RELATIVE : Type.ABSOLUTE; 
+            _type = dbPhysic.isRelative == 0 ? Physical.Type.RELATIVE : Physical.Type.ABSOLUTE; 
             _time = dbPhysic.time;
             _sequence = dbPhysic.sequence;
             _value.x = dbPhysic.x;

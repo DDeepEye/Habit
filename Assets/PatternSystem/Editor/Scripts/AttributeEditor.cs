@@ -5,7 +5,7 @@ using System.Collections;
 using System.Collections.Generic;
 
 namespace PatternSystem
-{
+{    
     [CustomEditor(typeof(AttributeAgent))]
 	public class AttributeEditor : Editor {
 

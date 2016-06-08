@@ -40,7 +40,7 @@ namespace PatternSystem
 
 		public override Property GetProperty(GameObject target)
 		{
-			return new Orbit(target, _value, _time);
+			return new Orbit(target, _value, _time, _type);
 		}
     }
 }
