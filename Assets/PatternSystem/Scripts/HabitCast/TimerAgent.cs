@@ -10,18 +10,30 @@ namespace PatternSystem
         {
         }
 
-        public override bool Save(DBAgent.MonoSQLiteManager dbManager, int parentID, string parentType, int sequence)
+        public override bool Save(DBAgent.MonoSQLiteManager dbManager, int parentID, string parentType, int sequence, bool isOverWrite = false)
         {
             DBTimer timer = new DBTimer();
+            timer.id = ID;
             timer.parentId = parentID;
             timer.parentType = parentType;
             timer.sequence = sequence;
             timer.time = _time;
-            dbManager.InsertTable<DBTimer>(ref timer);
-            if (dbManager.CommandQueries())
+            if (isOverWrite && ID != -1)
+            {
+                dbManager.UpdateTable<DBTimer>(ref timer);
+            }
+            else
+            {
+                dbManager.InsertTable<DBTimer>(ref timer);
+            }
+
+            if (!dbManager.CommandQueries())
                 return false;
-            timer = dbManager.GetTableLastData<DBTimer>();
-            _id = timer.id;
+            if (!isOverWrite)
+            {
+                timer = dbManager.GetTableLastData<DBTimer>();
+                _id = timer.id;
+            }
             return true;
         }
         public override void Build(DBBaseTable dbData)

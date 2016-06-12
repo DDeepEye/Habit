@@ -15,9 +15,10 @@ namespace PatternSystem
         public override void Run(GameObject target)
         {
         }
-        public override bool Save(DBAgent.MonoSQLiteManager dbManager, int parentID, string parentType, int sequence)
+        public override bool Save(DBAgent.MonoSQLiteManager dbManager, int parentID, string parentType, int sequence, bool isOverWrite = false)
         {
             DBPhysicalData physical = new DBPhysicalData();
+            physical.id = ID;
             physical.isRelative = (int)_type;
             physical.parentId = parentID;
             physical.parentType = parentType;
@@ -27,11 +28,22 @@ namespace PatternSystem
             physical.x = transform.localPosition.x;
             physical.y = transform.localPosition.y;
             physical.z = transform.localPosition.z;
-            dbManager.InsertTable<DBPhysicalData>(ref physical);
-            if (dbManager.CommandQueries())
+            if (isOverWrite && ID != -1)
+            {
+                dbManager.UpdateTable<DBPhysicalData>(ref physical);
+            }
+            else
+            {
+                dbManager.InsertTable<DBPhysicalData>(ref physical);
+            }
+
+            if (!dbManager.CommandQueries())
                 return false;
-            physical = dbManager.GetTableLastData<DBPhysicalData>();
-            _id = physical.id;
+            if (!isOverWrite)
+            {
+                physical = dbManager.GetTableLastData<DBPhysicalData>();
+                _id = physical.id;
+            }
             return true;
         }
         public override void Build(DBBaseTable dbData)

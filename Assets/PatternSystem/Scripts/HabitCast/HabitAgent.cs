@@ -68,19 +68,31 @@ namespace PatternSystem
 			return trigers;
 		}
 
-        public bool Save(DBAgent.MonoSQLiteManager dbManager)
+        public bool Save(DBAgent.MonoSQLiteManager dbManager, bool isOverWrite = false)
         {
             DBHabit habit = new DBHabit();
             habit.comment = _comment;
-            dbManager.InsertTable<DBHabit>(ref habit);
+            habit.id = ID;
+            if (isOverWrite && ID != -1)
+            {
+                dbManager.UpdateTable<DBHabit>(ref habit);
+            }
+            else
+            {
+                dbManager.InsertTable<DBHabit>(ref habit);
+            }
+
             if (!dbManager.CommandQueries())
                 return false;
-            habit = dbManager.GetTableLastData<DBHabit>();
-            _id = habit.id;
+            if (!isOverWrite)
+            {
+                habit = dbManager.GetTableLastData<DBHabit>();
+                _id = habit.id;
+            }
             List<TrigerAgent> trigers = CollectTriger();
             foreach (TrigerAgent ta in trigers)
             {
-                if (!ta.Save(dbManager, _id))
+                if (!ta.Save(dbManager, _id, isOverWrite))
                     return false;
             }
             return true;
@@ -105,6 +117,11 @@ namespace PatternSystem
                     trigerObj.GetComponent<TrigerAgent>().Build(dbTriger);
                 }
             }
+        }
+
+        void Delete(DBAgent.MonoSQLiteManager dbManager)
+        {
+            
         }
 	}
 }

@@ -21,6 +21,7 @@ namespace PatternSystem
 
 
         protected int _id = -1;
+        public int ID {get { return _id; }}
 
         public static List<AttributeAgent> CollectAttribute(Transform target)
 		{
@@ -42,7 +43,8 @@ namespace PatternSystem
             return attributes;
 		}
         public abstract void Run(GameObject target);
-        public abstract bool Save(DBAgent.MonoSQLiteManager dbManager, int parentID, string parentType, int sequence);
+        public abstract bool Save(DBAgent.MonoSQLiteManager dbManager, int parentID, string parentType, int sequence, bool isOverWrite = false);
+        ///public abstract void Delete(DBAgent.MonoSQLiteManager dbManager);
         public abstract void Build(DBBaseTable dbData);
 		public abstract Property GetProperty(GameObject target);
 	}

@@ -35,16 +35,27 @@ namespace PatternSystem
             
         }
 
-        public bool Save(DBAgent.MonoSQLiteManager dbManager, int habitDbId)
+        public bool Save(DBAgent.MonoSQLiteManager dbManager, int habitDbId, bool isOverWrite = false)
         {
             DBTriger triger = new DBTriger();
+            triger.id = _id;
             triger.habitId = habitDbId;
             triger.trigerName = _trigerName;
-            dbManager.InsertTable<DBTriger>(ref triger);
-            if (dbManager.CommandQueries())
+            if (isOverWrite && ID != -1)
+            {
+                dbManager.UpdateTable<DBTriger>(ref triger);
+            }
+            else
+            {
+                dbManager.InsertTable<DBTriger>(ref triger);
+            }
+            if (!dbManager.CommandQueries())
                 return false;
-            triger = dbManager.GetTableLastData<DBTriger>();
-            _id = triger.id;
+            if (!isOverWrite)
+            {
+                triger = dbManager.GetTableLastData<DBTriger>();
+                _id = triger.id;
+            }
             List<AttributeAgent> attributes = CollectAttribute();
             foreach (AttributeAgent att in attributes)
             {

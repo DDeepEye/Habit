@@ -22,7 +22,7 @@ namespace PatternSystem
         {
         }
 
-        public override bool Save(DBAgent.MonoSQLiteManager dbManager, int parentID, string parentType, int sequence)
+        public override bool Save(DBAgent.MonoSQLiteManager dbManager, int parentID, string parentType, int sequence, bool isOverWrite = false)
         {
             DBArrange arrange = new DBArrange();
             arrange.parentId = parentID;
@@ -30,12 +30,24 @@ namespace PatternSystem
             arrange.repeat = _repeat;
             arrange.sequence = sequence;
             arrange.type = (int)_type;
-            dbManager.InsertTable<DBArrange>(ref arrange);
+            arrange.id = ID;
+
+            if (isOverWrite && ID != -1)
+            {
+                dbManager.UpdateTable<DBArrange>(ref arrange);
+            }
+            else
+            {
+                dbManager.InsertTable<DBArrange>(ref arrange);
+            }
             if (!dbManager.CommandQueries())
                 return false;
 
-            arrange = dbManager.GetTableLastData<DBArrange>();
-            _id = arrange.id;
+            if (!isOverWrite)
+            {
+                arrange = dbManager.GetTableLastData<DBArrange>();
+                _id = arrange.id;
+            }
             List<AttributeAgent> attributes = AttributeAgent.CollectAttribute(transform);
             for (int i = 0; i < attributes.Count; ++i)
             {

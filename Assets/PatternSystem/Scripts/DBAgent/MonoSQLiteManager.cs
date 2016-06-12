@@ -153,28 +153,45 @@ namespace DBAgent
         Dictionary<string, ColumnInfo> _columns = null;
     }
 
-    public class DeleteTable : QueryContainer
+    public class DeleteTable<T> : QueryContainer
     {
-        internal DeleteTable(MonoSQLiteManager dbManager, string tableName) : base(dbManager)
+        internal DeleteTable(MonoSQLiteManager dbManager, ref T table) : base(dbManager)
         {
-            _tableName = tableName;
+            _table = table;
         }
 
-        static public string GetQuery(MonoSQLiteManager dbManaer, string tableName)
+        static public string GetQuery(MonoSQLiteManager dbManager, ref T table)
         {
-            return "DELETE FROM " + tableName;
+            Dictionary<string, ColumnInfo> columns = dbManager.GetTableColumnsInfo(table.GetType());
+
+            System.Type type = table.GetType();
+            FieldInfo[] members = type.GetFields(BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Instance | BindingFlags.SetField | BindingFlags.GetField);
+            FieldInfo key = dbManager.GetPrimaryKey(members);
+            if (key == null)
+            {
+                Debug.Log("not Update None PrimaryKey table. name = " + type.Name);
+                return null;
+            }
+
+            int keyindex = 0;
+            for(int i = 0; i < members.Length; ++i)
+            {
+                if (key == members[i])
+                {
+                    keyindex = i;
+                    break;
+                }
+            }
+            return "DELETE FROM " + type.Name + " WHERE "+members[keyindex].Name+" = "+members[keyindex].GetValue(table).ToString();
         }
 
         public override void Run()
-        {
-            if (!_dbManager.IsExistenceTable(_tableName))
-            {
-                Debug.Log("not Exist Table => " + _tableName);
-            }            
-            _dbManager.ExecuteNonQuery(GetQuery(_dbManager, _tableName));
+        {  
+            _dbManager.ExecuteNonQuery(GetQuery(_dbManager, ref _table));
         }
 
-        string _tableName;
+        T _table;
+
     }
 
     public class DropTable : QueryContainer
@@ -426,10 +443,10 @@ namespace DBAgent
                 columns_q += members[i].Name;
                 columns_q += "=";
                 if (members[i].FieldType == typeof(string) || members[i].FieldType == typeof(char))
-                    columns_q += "`";
+                    columns_q += "\"";
                 columns_q += members[i].GetValue(table).ToString();
                 if (members[i].FieldType == typeof(string) || members[i].FieldType == typeof(char))
-                    columns_q += "`";
+                    columns_q += "\"";
             }
 
 
@@ -716,16 +733,16 @@ namespace DBAgent
             return true;
         }
 
-		public void DeleteTable(string tableName)
+        public void DeleteTable<T>(ref T table)
 		{
-            PushQuery(new DBAgent.DeleteTable(this, tableName));
+            PushQuery(new DBAgent.DeleteTable<T>(this, ref table));
 		}
 
-        public bool DQDeleteTable(string tableName)
+        public bool DQDeleteTable<T>(ref T table)
         {
             try
             {
-                ExecuteNonQuery(DBAgent.DeleteTable.GetQuery(this, tableName));
+                ExecuteNonQuery(DBAgent.DeleteTable<T>.GetQuery(this,ref table));
             }
             catch(Exception e)
             {

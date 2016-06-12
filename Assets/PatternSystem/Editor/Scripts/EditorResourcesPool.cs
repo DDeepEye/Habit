@@ -92,7 +92,7 @@ namespace PatternSystem
         }
 
         [MenuItem("Tools/PatterSystem/SaveCurrentPattern")]
-        static private void SaveCurrentPattern()
+        static private void SaveCurrentPatterns()
         {
             MonoSQLiteManager dbManager = new MonoSQLiteManager(PATH + DBFILENAME);
 
@@ -118,6 +118,33 @@ namespace PatternSystem
                     }
                 }
             }
+            file.Delete();
+
+            dbManager.Close();
+        }
+
+        static public void SavePattern(HabitAgent ha, bool isOverWrite = false)
+        {
+            MonoSQLiteManager dbManager = new MonoSQLiteManager(PATH + DBFILENAME);
+            string backupFileName = PATH + DateTime.Now.ToString("yyyy_mm_dd")+ ".db";
+            FileInfo file = new FileInfo(PATH + DBFILENAME);
+            if(file.Exists)
+            {
+                file.CopyTo(backupFileName, true);
+            }
+
+            if(ha.transform.parent != null)
+            {
+                if(!ha.Save(dbManager, isOverWrite))
+                {
+                    FileInfo bfile = new FileInfo(backupFileName);
+                    if(bfile.Exists)
+                    {
+                        bfile.CopyTo(PATH + DBFILENAME);
+                    }
+                }
+            }
+
             file.Delete();
 
             dbManager.Close();
