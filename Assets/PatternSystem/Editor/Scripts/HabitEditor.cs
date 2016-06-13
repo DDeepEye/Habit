@@ -25,23 +25,6 @@ namespace PatternSystem
 			{
                 if (_habit.transform.parent != null)
                 {
-
-                    EditorGUILayout.BeginHorizontal ();
-                    
-                    if (GUILayout.Button("New Save"))
-                    {
-                        EditorResourcesPool.SavePattern(_habit);
-                    }
-
-                    if (_habit.ID != -1)
-                    {
-                        if (GUILayout.Button("OverWrite Save"))
-                        {
-                            EditorResourcesPool.SavePattern(_habit, true);
-                        }
-                    }
-                    EditorGUILayout.EndHorizontal();
-
                     _habit._comment = EditorGUILayout.TextField("Habit Comment", _habit._comment);
                     if (GUILayout.Button("Add Triger"))
                     {
@@ -51,8 +34,6 @@ namespace PatternSystem
                         triger.name = triger.name.Replace("(clone)", "");
                         triger.transform.SetParent(_habit.transform);
                     }
-
-
 
                     List<TrigerAgent> trigers = _habit.CollectTriger();
                     if(trigers.Count > 0)
@@ -72,7 +53,7 @@ namespace PatternSystem
                         EditorGUILayout.BeginHorizontal();
                         _trigerSelected = EditorGUILayout.Popup("Choice Active Triger", _trigerSelected, trigerNames.ToArray());
                         EditorGUILayout.EndHorizontal();
-                        _habit._activeTriger = trigerNames[_trigerSelected];
+                        _habit.ActiveTriger = trigerNames[_trigerSelected];
                     }
                     else
                     {

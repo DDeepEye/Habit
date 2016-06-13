@@ -73,103 +73,10 @@ namespace PatternSystem
             LoadTables();
 		}
 
-        [MenuItem("Tools/PatterSystem/CreateDBTable")]
-        static private void CreateDBTable()
-        {
-            System.Type[] tables = {
-                typeof( DBArrange ),
-                typeof( DBHabit ),
-                typeof( DBTriger ),
-                typeof( DBTimer ),
-                typeof( DBCall ),
-                typeof( DBPhysicalData ),
-            };
-
-            TableCreator.PushTables(tables);
-            MonoSQLiteManager dbManager = new MonoSQLiteManager(PATH + DBFILENAME);
-            TableCreator.CreateTable(dbManager);
-            dbManager.Close();
-        }
-
-        [MenuItem("Tools/PatterSystem/SaveCurrentPattern")]
-        static private void SaveCurrentPatterns()
-        {
-            MonoSQLiteManager dbManager = new MonoSQLiteManager(PATH + DBFILENAME);
-
-            string backupFileName = PATH + DateTime.Now.ToString("yyyy_mm_dd")+ ".db";
-            FileInfo file = new FileInfo(PATH + DBFILENAME);
-            if(file.Exists)
-            {
-                file.CopyTo(backupFileName, true);
-            }
-
-            foreach (PatternSystem.HabitAgent ha in PatternSystem.HabitAgent.Habits)
-            {
-                if(ha.transform.parent != null)
-                {
-                    if(!ha.Save(dbManager))
-                    {
-                        FileInfo bfile = new FileInfo(backupFileName);
-                        if(bfile.Exists)
-                        {
-                            bfile.CopyTo(PATH + DBFILENAME);
-                            break;
-                        }
-                    }
-                }
-            }
-            file.Delete();
-
-            dbManager.Close();
-        }
-
-        static public void SavePattern(HabitAgent ha, bool isOverWrite = false)
-        {
-            MonoSQLiteManager dbManager = new MonoSQLiteManager(PATH + DBFILENAME);
-            string backupFileName = PATH + DateTime.Now.ToString("yyyy_mm_dd")+ ".db";
-            FileInfo file = new FileInfo(PATH + DBFILENAME);
-            if(file.Exists)
-            {
-                file.CopyTo(backupFileName, true);
-            }
-
-            if(ha.transform.parent != null)
-            {
-                if(!ha.Save(dbManager, isOverWrite))
-                {
-                    FileInfo bfile = new FileInfo(backupFileName);
-                    if(bfile.Exists)
-                    {
-                        bfile.CopyTo(PATH + DBFILENAME);
-                    }
-                }
-            }
-
-            file.Delete();
-
-            dbManager.Close();
-        }
-        [MenuItem("Tools/PatterSystem/ReadPattern")]
-        static private void ReadPattern()
-        {
-            HabitAgent.s_listManager = PatternList;
-
-            Type habitType = Instance._editorPrefabPaths[(int)ePatternList.HABIT]._tableDataType;
-            Dictionary<int, DBBaseTable> habits = Instance._tables[habitType];
-            foreach(KeyValuePair<int, DBBaseTable> habit in habits)
-            {
-                DBHabit dbHabit = habit.Value as DBHabit;
-                GameObject objHabit = GameObject.Instantiate(Instance._editorPrefabs[ePatternList.HABIT]) as GameObject;
-                objHabit.GetComponent<HabitAgent>().Build(dbHabit);
-                objHabit.name = objHabit.name.Replace("(Clone)", "");
-            }
-        }
-
-
         public UnityEngine.Object GetEditorPrefab(ePatternList key)
 		{
 			return _editorPrefabs [key];
-		}        
+		} 
 	}
 }
 
