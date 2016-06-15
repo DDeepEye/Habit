@@ -59,15 +59,17 @@ namespace PatternSystem
             new EditorPrefabInfo(ePatternList.ORBIT, "Assets/PatternSystem/Editor/EditorPrefabs/Orbit.prefab", typeof(DBPhysicalData)),
             new EditorPrefabInfo(ePatternList.TIMER, "Assets/PatternSystem/Editor/EditorPrefabs/Timer.prefab", typeof(DBTimer)),
             new EditorPrefabInfo(ePatternList.CALL, "Assets/PatternSystem/Editor/EditorPrefabs/Call.prefab", typeof(DBCall)),
+            new EditorPrefabInfo(ePatternList.CHILD_CONTROL, "Assets/PatternSystem/Editor/EditorPrefabs/ChildControl.prefab", typeof(DBCall)),
 		};
         Dictionary<ePatternList,UnityEngine.Object> _editorPrefabs = new Dictionary<ePatternList, UnityEngine.Object>();        
 
 		void Init()
 		{
+            
 			for (int i = 0; i < _editorPrefabPaths.Length; ++i) 
 			{
                 UnityEngine.Object o = AssetDatabase.LoadAssetAtPath(_editorPrefabPaths[i]._path, typeof(UnityEngine.Object));
-				_editorPrefabs.Add (_editorPrefabPaths [i]._key, o);
+				_editorPrefabs.Add (_editorPrefabPaths[i]._key, o);
 			}
             DataClerk.s_editorPrefabs = _editorPrefabs;
             LoadTables();

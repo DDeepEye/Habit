@@ -42,10 +42,8 @@ namespace PatternSystem
 			}
             return attributes;
 		}
-        public abstract void Run(GameObject target);
-        public abstract bool Save(DBAgent.MonoSQLiteManager dbManager, int parentID, string parentType, int sequence, bool isOverWrite = false);
-        ///public abstract void Delete(DBAgent.MonoSQLiteManager dbManager);
-        public abstract void Build(DBBaseTable dbData);
-		public abstract Property GetProperty(GameObject target);
+
+
+        public abstract Container GetContainer(GameObject target);
 	}
 }

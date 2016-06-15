@@ -8,47 +8,79 @@ namespace PatternSystem
     {
         string _key;
         public string Key { get { return _key; } }
-        protected List<Property> _conditions = new List<Property>();
-        public List<Property> Conditions { get { return _conditions; } }
+        protected List<Container> _conditions = new List<Container>();
+        public List<Container> Conditions { get { return _conditions; } }
 
-		public Triger(string key, GameObject target, List<Property> conditions)
+		public Triger(string key, GameObject target, List<Container> conditions)
         {
             _key = key;
 			_conditions = conditions;
         }
 
-        public Triger(string key, GameObject target, Property p)
+        public Triger(string key, GameObject target, Container c)
         {
             key = _key;
-            _conditions.Add(p);
+            _conditions.Add(c);
         }
 
         public void Run()
         {
-            foreach(Property p in Conditions)
+            foreach(Container p in Conditions)
             {
                 p.Run();
             }
         }
     }
 
-    public abstract class Property
+    public abstract class Container
     {
-		protected GameObject _target;
+        protected Container(){}
+        public abstract void Run();
+
         protected bool _isDone = false;
         public bool IsDone { get { return _isDone; } }
-        protected Property() { }
-        public abstract void Run();
+
         public virtual void Reset(bool isPure)
         {
-			_isDone = false;
+            _isDone = false;
         }
+    }
+
+    public class ChildContainer : Container
+    {
+        List<GameObject> _children;
+
+        public ChildContainer(List<GameObject> children)
+        {
+            _children = children;
+        }
+        public override void Run()
+        {
+            if (IsDone || _children == null)
+                return;
+
+            foreach (GameObject chiled in _children)
+            {
+                chiled.SetActive(true);
+            }
+
+            _isDone = true;
+        }
+    }
+
+    public abstract class Property : Container
+    {
+		protected GameObject _target;
+        protected Property() { }
+
 
 		protected Property(GameObject target)
 		{
 			_target = target;
 		}
     }
+
+
 
     public class Arrange : Property
     {
@@ -59,15 +91,15 @@ namespace PatternSystem
         }
 
         private ArrangeType _type = ArrangeType.SERIES;
-        private List<Property> _properties = new List<Property>();
+        private List<Container> _containers = new List<Container>();
         private int _curProerty = 0;
         private int _repeatCount;
         private int _curCount = 0;
 
-		public Arrange(GameObject target, ArrangeType type, List<Property> properties, int repeatCount):base(target)
+        public Arrange(GameObject target, ArrangeType type, List<Container> containers, int repeatCount):base(target)
 		{
 			_type = type;
-			_properties = properties;
+            _containers = containers;
 			_repeatCount = repeatCount;
 		}
 
@@ -93,15 +125,15 @@ namespace PatternSystem
             _curProerty = 0;
             _isDone = false;
             _curCount = 0;
-            for (int i = 0; i < _properties.Count; ++i)
-                _properties[i].Reset(isPure);
+            for (int i = 0; i < _containers.Count; ++i)
+                _containers[i].Reset(isPure);
         }
 
         private void SeiesRun()
         {
-            _properties[_curProerty].Run();
+            _containers[_curProerty].Run();
 
-            if (_properties[_curProerty].IsDone)
+            if (_containers[_curProerty].IsDone)
                 ++_curProerty;
         }
 
@@ -109,9 +141,9 @@ namespace PatternSystem
         {
             int doneCnt = 0;
 
-            for (int i = 0; i < _properties.Count; ++i)
+            for (int i = 0; i < _containers.Count; ++i)
             {
-                Property inter = _properties[i];
+                Container inter = _containers[i];
                 inter.Run();
 
                 if (inter.IsDone)
@@ -120,13 +152,13 @@ namespace PatternSystem
         }
         private void ResetCheck()
         {
-            if (_properties.Count == _curProerty)
+            if (_containers.Count == _curProerty)
             {
                 if (_repeatCount == 0)
                 {
-                    for (int i = 0; i < _properties.Count; ++i)
+                    for (int i = 0; i < _containers.Count; ++i)
                     {
-                        Property p = _properties[i];
+                        Container p = _containers[i];
                         p.Reset(false);
                         _curProerty = 0;
                     }
@@ -135,9 +167,9 @@ namespace PatternSystem
                 {
                     if (_repeatCount == _curCount + 1)
                     {
-                        for (int i = 0; i < _properties.Count; ++i)
+                        for (int i = 0; i < _containers.Count; ++i)
                         {
-                            Property p = _properties[i];
+                            Container p = _containers[i];
                             p.Reset(true);
                             _curProerty = 0;
                         }
@@ -145,9 +177,9 @@ namespace PatternSystem
                     }
                     else
                     {
-                        for (int i = 0; i < _properties.Count; ++i)
+                        for (int i = 0; i < _containers.Count; ++i)
                         {
-                            Property p = _properties[i];
+                            Container p = _containers[i];
                             p.Reset(false);
                             _curProerty = 0;
                         }

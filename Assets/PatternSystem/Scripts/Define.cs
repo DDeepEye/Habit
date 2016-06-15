@@ -16,6 +16,7 @@ namespace PatternSystem
         ORBIT,
         TIMER,
         CALL,
+        CHILD_CONTROL,
 		MAX,
 	}
 

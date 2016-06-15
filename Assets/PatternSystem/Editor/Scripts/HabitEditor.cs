@@ -11,9 +11,6 @@ namespace PatternSystem
 
         HabitAgent _habit;
 
-        int _trigerSelected = 0;
-
-
 		void OnEnable () {
 
             _habit = target as HabitAgent;
@@ -38,31 +35,31 @@ namespace PatternSystem
                     List<TrigerAgent> trigers = _habit.CollectTriger();
                     if(trigers.Count > 0)
                     {
+                        int index = 0;
+                        int trigerSelected = 0;
                         List<string> trigerNames = new List<string>();
                         HashSet<string> overlap = new HashSet<string>();
                         foreach(TrigerAgent triger in trigers)
                         {
+                            if (triger.TrigerName == _habit.ActiveTriger)
+                                trigerSelected = index;
                             trigerNames.Add(triger.TrigerName);
+                            ++index;
                             if (overlap.Contains(triger.TrigerName))
                                 Debug.Log("Overlap Triger Name !! -> " + triger.TrigerName);
                             else
                                 overlap.Add(triger.TrigerName);
-                            
-                        }                       
+                        }
 
                         EditorGUILayout.BeginHorizontal();
-                        _trigerSelected = EditorGUILayout.Popup("Choice Active Triger", _trigerSelected, trigerNames.ToArray());
+                        trigerSelected = EditorGUILayout.Popup("Choice Active Triger", trigerSelected, trigerNames.ToArray());
                         EditorGUILayout.EndHorizontal();
-                        _habit.ActiveTriger = trigerNames[_trigerSelected];
+                        _habit.ActiveTriger = trigerNames[trigerSelected];
                     }
                     else
                     {
                         GUILayout.TextArea("Add Triger");
                     }
-                    
-                    ///_trigerSelected = GUILayout.SelectionGrid(_trigerSelected,)
-
-                    
                 }
                 else
                 {
@@ -73,10 +70,7 @@ namespace PatternSystem
 
 			if (GUI.changed)
 				EditorUtility.SetDirty(target);
-
-
 		}
-
 	}
 }
 
