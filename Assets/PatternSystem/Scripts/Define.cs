@@ -81,48 +81,34 @@ namespace PatternSystem
     {
         private DataClerk(){}
         public static Dictionary<System.Type, Dictionary<int, DBBaseTable> > s_tables;
-        public static Dictionary<ePatternList, UnityEngine.Object> s_editorPrefabs;
+        public static List<UnityEngine.Object> s_editorPrefabs;
 
         public static Dictionary<int, DBBaseTable> GetTable(System.Type type)
         {
             return s_tables[type];
         }
-        public static UnityEngine.Object GetPatternPrefab(ePatternList kind)
+
+        public static int GetPatternPrefabCount()
         {
-            return s_editorPrefabs[kind];
+            return s_editorPrefabs.Count;
         }
 
-
-        public static readonly System.Type [] IntervalTypes = {typeof(DBArrange), typeof(DBTimer), typeof(DBCall), typeof(DBPhysicalData)};
-        public static readonly Dictionary<string, ePatternList> Physicals = new Dictionary<string, ePatternList>()
+        public static UnityEngine.Object GetPatternPrefab(int i)
         {
-            {MoveAgent.DBType, ePatternList.MOVE},
-            {OrbitAgent.DBType, ePatternList.ORBIT},
-            {RotationAgent.DBType, ePatternList.ROTATION},
-            {ScaleAgent.DBType, ePatternList.SCALE},
-        };
+            return s_editorPrefabs[i];
+        }
 
-        public static readonly Dictionary<string, System.Type> PhysicalComponents = new Dictionary<string, System.Type>()
+        public static UnityEngine.Object GetPatternPrefab(string name)
         {
-            {MoveAgent.DBType, typeof(MoveAgent)},
-            {OrbitAgent.DBType, typeof(OrbitAgent)},
-            {RotationAgent.DBType, typeof(RotationAgent)},
-            {ScaleAgent.DBType,typeof(ScaleAgent)},
-        };
-
-
-        public static readonly Dictionary<System.Type, ePatternList> Intervals = new Dictionary<System.Type, ePatternList>()
-        {
-            {typeof(DBArrange), ePatternList.ARRANGE}, 
-            {typeof(DBTimer), ePatternList.TIMER}, 
-            {typeof(DBCall), ePatternList.CALL}
-        };
-
-        public static readonly Dictionary<System.Type, System.Type> IntervalComponents = new Dictionary<System.Type, System.Type>()
-        {
-            {typeof(DBArrange), typeof(ArrangeAgent)}, 
-            {typeof(DBTimer), typeof(TimerAgent)}, 
-            {typeof(DBCall), typeof(CallAgent)}
-        };
+            
+            for (int i = 0; i < s_editorPrefabs.Count; ++i)
+            {
+                if (s_editorPrefabs[i].name == name)
+                {
+                    return s_editorPrefabs[i];
+                }
+            }
+            return null;
+        }
     }
 }

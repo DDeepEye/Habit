@@ -20,11 +20,6 @@ namespace PatternSystem
 
         Dictionary<string, Triger> _trigers = new Dictionary<string, Triger>();
 
-        
-
-        // Update is called once per frame
-        
-
         public HabitAgent()
         {
             _containerType = ePatternList.HABIT;
