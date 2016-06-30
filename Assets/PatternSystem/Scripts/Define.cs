@@ -81,34 +81,10 @@ namespace PatternSystem
     {
         private DataClerk(){}
         public static Dictionary<System.Type, Dictionary<int, DBBaseTable> > s_tables;
-        public static List<UnityEngine.Object> s_editorPrefabs;
 
         public static Dictionary<int, DBBaseTable> GetTable(System.Type type)
         {
             return s_tables[type];
-        }
-
-        public static int GetPatternPrefabCount()
-        {
-            return s_editorPrefabs.Count;
-        }
-
-        public static UnityEngine.Object GetPatternPrefab(int i)
-        {
-            return s_editorPrefabs[i];
-        }
-
-        public static UnityEngine.Object GetPatternPrefab(string name)
-        {
-            
-            for (int i = 0; i < s_editorPrefabs.Count; ++i)
-            {
-                if (s_editorPrefabs[i].name == name)
-                {
-                    return s_editorPrefabs[i];
-                }
-            }
-            return null;
         }
     }
 }

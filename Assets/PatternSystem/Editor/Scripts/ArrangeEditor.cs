@@ -11,13 +11,31 @@ namespace PatternSystem
 	public class ArrangeEditor : AttributeEditor 
 	{
         ArrangeAgent _arrange;
+        List<UnityEngine.Object> _editorPrefabs = new List<UnityEngine.Object>();
+
 		void OnEnable () {
             _arrange = target as ArrangeAgent;
             _attribute = _arrange;
 		}
 
+        void Init()
+        {
+            string[] GUIDs = AssetDatabase.FindAssets("", new string[] {"Assets/PatternSystem/Resources/PatternPrefabs/Triger/Arrange"});
+
+            for (int index = 0; index < GUIDs.Length; index++)
+            {
+                string guid = GUIDs[index];
+                string assetPath = AssetDatabase.GUIDToAssetPath(guid);
+                UnityEngine.Object asset = AssetDatabase.LoadAssetAtPath(assetPath, typeof(UnityEngine.Object)) as UnityEngine.Object;
+                _editorPrefabs.Add(asset);
+            }
+        }
+
 		public override void OnInspectorGUI()
 		{
+            if (_editorPrefabs.Count == 0)
+                Init();
+            
             if (_arrange.transform.parent == null)
                 return;
 
@@ -34,14 +52,14 @@ namespace PatternSystem
 			EditorGUILayout.BeginVertical ();
 			{
                 
-                for(int i = 0; i < EditorResourcesPool.Instance.GetEditorPrefabCount(); ++i)
+                for(int i = 0; i < _editorPrefabs.Count; ++i)
 				{
 					string btnlabel = "Add --> ";
-                    btnlabel += EditorResourcesPool.Instance.GetEditorPrefab(i).name;
+                    btnlabel += _editorPrefabs[i].name;
 
 					if(GUILayout.Button(btnlabel))
 					{
-                        Object attribute = EditorResourcesPool.Instance.GetEditorPrefab(i);
+                        Object attribute = _editorPrefabs[i];
 						GameObject triger = PrefabUtility.InstantiatePrefab(attribute) as GameObject;
                         triger.transform.SetParent(_arrange.transform);
 					}

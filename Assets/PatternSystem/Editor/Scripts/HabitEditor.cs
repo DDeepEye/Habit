@@ -11,10 +11,25 @@ namespace PatternSystem
 
         HabitAgent _habit;
 
+        List<UnityEngine.Object> _editorPrefabs = new List<UnityEngine.Object>();
+
 		void OnEnable () {
 
             _habit = target as HabitAgent;
 		}
+
+        void Init()
+        {
+            string[] GUIDs = AssetDatabase.FindAssets("Triger t:Prefab", new string[] {"Assets/PatternSystem/Resources/PatternPrefabs/Triger"});
+
+            for (int index = 0; index < GUIDs.Length; index++)
+            {
+                string guid = GUIDs[index];
+                string assetPath = AssetDatabase.GUIDToAssetPath(guid);
+                UnityEngine.Object asset = AssetDatabase.LoadAssetAtPath(assetPath, typeof(UnityEngine.Object)) as UnityEngine.Object;
+                _editorPrefabs.Add(asset);
+            }
+        }
 
 		public override void OnInspectorGUI()
 		{   
@@ -25,7 +40,10 @@ namespace PatternSystem
                     _habit._comment = EditorGUILayout.TextField("Habit Comment", _habit._comment);
                     if (GUILayout.Button("Add Triger"))
                     {
-                        Object habit = EditorResourcesPool.Instance.GetPatternPrefab("Triger");
+                        if (_editorPrefabs.Count == 0)
+                            Init();
+                        
+                        Object habit = _editorPrefabs[0];
                         GameObject triger = PrefabUtility.InstantiatePrefab(habit) as GameObject;
                         triger.name = triger.name.Replace("(clone)", "");
                         triger.transform.SetParent(_habit.transform);

@@ -38,43 +38,9 @@ namespace PatternSystem
 
 		void Init()
 		{
-            
-            string[] GUIDs = AssetDatabase.FindAssets("", new string[] {"Assets/PatternSystem/Editor/EditorPrefabs"});
-
-            for (int index = 0; index < GUIDs.Length; index++)
-            {
-                string guid = GUIDs[index];
-                string assetPath = AssetDatabase.GUIDToAssetPath(guid);
-                UnityEngine.Object asset = AssetDatabase.LoadAssetAtPath(assetPath, typeof(UnityEngine.Object)) as UnityEngine.Object;
-                _editorPrefabs.Add(asset);
-            }
-
-            DataClerk.s_editorPrefabs = _editorPrefabs;
             LoadTables();
 		}
 
-        public int GetEditorPrefabCount()
-        {
-            return _editorPrefabs.Count;
-        }
-
-        public UnityEngine.Object GetEditorPrefab(int i)
-		{
-			return _editorPrefabs[i];
-		}
-
-        public UnityEngine.Object GetPatternPrefab(string name)
-        {
-            
-            for (int i = 0; i < _editorPrefabs.Count; ++i)
-            {
-                if (_editorPrefabs[i].name == name)
-                {
-                    return _editorPrefabs[i];
-                }
-            }
-            return null;
-        }
 	}
 }
 
